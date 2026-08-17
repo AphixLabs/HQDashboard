@@ -1,0 +1,16 @@
+{
+  "name": "HQ",
+  "short_name": "HQ",
+  "description": "HQ — your personal command console",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A0F0D",
+  "theme_color": "#0A0F0D",
+  "icons": [
+    { "src": "icon-192.png?v=hq6", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png?v=hq6", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png?v=hq6", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
