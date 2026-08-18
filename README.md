@@ -4,10 +4,12 @@
 
 ---
 
+**Live demo:** https://aphixlabs.github.io/HQDashboard/
+
 ## Try it live (no install)
 Two zero-cost ways to publish a public demo — no passphrase, no cloud, saves only in the visitor's browser, with a **Reset demo** button so anyone can start from onboarding:
 
-1. **GitHub Pages** — repo → Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)` → Save. Your demo is live at `https://<you>.github.io/<repo>/` (root redirects to `app/?demo=1`). Nothing else to configure; the app detects `github.io` and enters demo mode.
+1. **GitHub Pages** — repo → Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)` → Save. Your demo is live at `https://aphixlabs.github.io/HQDashboard/` (root redirects to `app/?demo=1`). Nothing else to configure; the app detects `github.io` and enters demo mode.
 2. **Your Worker** — every deployed HQ also serves `/demo` publicly (no login) as a browser-only preview. Set a `REPO_URL` variable on the Worker to point the "Deploy your own" button at your repo.
 
 ## Deploy your own (browser only, ~5 minutes, free)
