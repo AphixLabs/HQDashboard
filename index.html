@@ -392,7 +392,7 @@ input[type=color]{padding:2px;height:36px;cursor:pointer}
 .prio.p1{background:var(--neg)}.prio.p2{background:var(--accent)}.prio.p3{background:var(--muted)}
 
 /* ============================================================
-   FITNESS — Operation 200
+   FITNESS
    ============================================================ */
 .fit-layout{grid-template-columns:1.15fr .85fr}
 #op200{position:relative;overflow:hidden;border:1px solid var(--line2)}
@@ -1012,7 +1012,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 /* ============================================================
    v12 — Notes (iOS-grade) + project editor
    ============================================================ */
-.notes-layout{grid-template-columns:320px 1fr}
+.notes-layout{grid-template-columns:320px minmax(0,1fr)}
+.note-item .row2 .p{min-width:0;flex:1}
 .notes-side{padding:14px 12px 12px;display:flex;flex-direction:column;max-height:calc(100vh - 140px)}
 .note-search input{width:100%;font-size:13px;padding:9px 12px;border-radius:11px}
 .note-folders{display:flex;gap:6px;margin:10px 0 8px;flex-wrap:wrap}
@@ -1049,7 +1050,11 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .note-sealed .tt{font-size:18px;font-weight:600;color:var(--text)}
 .note-sealed .ss{font-size:12.5px;max-width:320px;line-height:1.5}
 @media (max-width:760px){
-  .notes-layout.mob{grid-template-columns:1fr}
+  .notes-layout.mob{grid-template-columns:minmax(0,1fr)}
+  .notes-side,.note-editor{min-width:0}
+  .note-item{min-width:0}
+  .note-item .row1,.note-item .row2{min-width:0}
+  .note-item .row2 .p{min-width:0;flex:1}
   .notes-side{max-height:none;padding:12px}
   .note-editor{padding:10px 14px 18px;min-height:70vh}
   #note-title{font-size:22px}
@@ -1152,6 +1157,414 @@ html[data-theme="sakura"] .card{border-radius:20px}
 html[data-theme="arctic"] .card{backdrop-filter:blur(14px)}
 /* subtle scanline overlay for neon (very faint) */
 html[data-theme="neon"] body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,var(--scan) 0 1px,transparent 1px 3px)}
+/* ============================================================
+   v32 — Keys vault, layout editor, iOS mobile pass
+   ============================================================ */
+.eyebrow.link,.row.link,.grow.link{cursor:pointer}
+.eyebrow.link:hover{color:var(--accent)}
+.row.link:hover{background:var(--surface2)}
+.row.link>svg:last-child{width:14px;height:14px;color:var(--faint)}
+/* layout editor */
+.ovedit-wrap{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+.ovedit-panel{position:sticky;top:80px}
+.ovlist{display:flex;flex-direction:column;gap:6px}
+.ovrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);transition:background .3s,border-color .3s}
+.ovrow .nm{font-size:13px;font-weight:600}
+.ovrow.moved{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.ovrow.hid{opacity:.6}
+.ovrow .iconbtn[disabled]{opacity:.25;pointer-events:none}
+.ovhid-h{font-family:var(--font-display);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:10px 0 2px}
+.ovnum{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;background:var(--surface3);color:var(--muted);flex-shrink:0}
+.ovblk{position:relative;outline:1.5px dashed color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:4px}
+.ovblk>.ovnum{position:absolute;top:-10px;left:-10px;background:var(--accent);color:var(--accent-ink);z-index:6;box-shadow:0 4px 12px -4px var(--glow)}
+.ovblk.moved{outline-color:var(--accent);animation:ovpulse 1.2s var(--ease)}
+@keyframes ovpulse{0%{box-shadow:0 0 0 0 var(--glow)}60%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.ovedit .card{pointer-events:none}
+.ovedit-wrap .card,.ovedit-wrap .ovblk{animation:none!important}   /* editing: no entrance fades, moves are the only motion */
+.ovedit .card .ovnum{pointer-events:auto}
+/* keys */
+.keys-gate{max-width:520px;margin:40px auto;padding:34px 30px}
+.keys-gate-in{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.keys-badge{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,var(--surface2));border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);color:var(--accent);box-shadow:0 0 34px -8px var(--glow)}
+.keys-badge svg{width:28px;height:28px}
+.keys-gate h3{font-family:var(--font-display);font-size:16px;letter-spacing:.14em;text-transform:uppercase}
+.keys-gate p{font-size:12.5px;color:var(--muted);line-height:1.6;max-width:380px}
+.keys-gate input{width:100%;max-width:320px;text-align:center;letter-spacing:.08em}
+.keys-gate .btn{min-width:200px;margin-top:4px}
+.keys-top{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.keys-list{display:flex;flex-direction:column;gap:8px}
+.key-row{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 92%,transparent)}
+.key-av{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-family:var(--font-display);font-size:18px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--kc),color-mix(in srgb,var(--kc) 60%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.key-main{min-width:0;cursor:pointer}
+.key-t{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.key-dom{font-size:10.5px;color:var(--faint);font-weight:400}
+.key-u{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.key-p{font-family:var(--font-mono);font-size:12px;color:var(--faint);letter-spacing:.14em;margin-top:3px;display:flex;align-items:center;gap:8px}
+.key-p.show{color:var(--text);letter-spacing:.02em}
+.key-p .st{width:28px;height:4px;border-radius:2px;background:var(--line2);position:relative;overflow:hidden}
+.key-p .st::after{content:"";position:absolute;left:0;top:0;bottom:0;background:var(--neg);width:25%}
+.key-p .st.s2::after{width:50%;background:#E9B44C}.key-p .st.s3::after{width:75%;background:var(--pos)}.key-p .st.s4::after{width:100%;background:var(--pos)}
+.key-act{display:flex;gap:2px}
+.key-act .iconbtn{width:34px;height:34px}
+a.iconbtn{display:grid;place-items:center;text-decoration:none}
+/* ---------- iOS mobile pass ---------- */
+@media (max-width:760px){
+  .ovedit-wrap{grid-template-columns:1fr}
+  .ovedit-panel{position:static}
+  /* section headers read like iOS grouped lists */
+  .card-head .eyebrow{font-size:10px}
+  /* rows: chevron affordance for links */
+  .row.link{padding-right:6px}
+  /* NOTES — iOS Notes proportions */
+  .notes-side{padding:8px 10px}
+  .note-search input{font-size:15px;padding:9px 12px;border-radius:12px}
+  .note-folders{gap:6px;margin:8px 0 6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
+  .note-folders button{white-space:nowrap;padding:5px 10px}
+  .note-item{padding:9px 10px;border-radius:12px}
+  .note-item .t{font-size:15px;font-weight:600}
+  .note-item .row2{font-size:12px;margin-top:2px}
+  .note-item+.note-item{margin-top:0}
+  .note-editor{padding:6px 12px 14px;min-height:0}
+  .note-bar{margin-bottom:2px}
+  #note-title{font-size:20px;padding:6px 0 2px}
+  .note-tools{padding:2px 0 6px;overflow-x:auto;flex-wrap:nowrap}
+  .note-tools button{min-width:36px;height:34px}
+  .note-tools .num{display:none}
+  #note-body{font-size:16px;line-height:1.6;min-height:46vh;padding:6px 0}
+  .note-sealed{padding:30px 16px}
+  /* KEYS mobile */
+  .keys-gate{margin:16px auto;padding:26px 18px}
+  .key-row{grid-template-columns:40px 1fr;padding:11px 12px;gap:10px}
+  .key-act{grid-column:1/-1;justify-content:flex-end;gap:2px;margin-top:2px}
+  .key-act .iconbtn{width:38px;height:36px}
+  .keys-top .sub{display:none}
+}
+
+/* ============================================================
+   RESPONSIVE FRAME — ultrawide, short viewports, high-DPI scaling
+   ============================================================ */
+/* very wide: centre the whole app as a frame instead of pinning left */
+@media (min-width:1900px){
+  #app{max-width:1880px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);box-shadow:0 0 120px -40px rgba(0,0,0,.8)}
+  #main{max-width:none;padding-left:34px;padding-right:34px}
+  .ov-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+}
+@media (min-width:2400px){
+  #app{max-width:2200px}
+  html{font-size:17px}
+}
+/* short desktop viewports (300% scaling on ultrawide, small laptops, split-screen): compact hero + chrome */
+@media (min-width:761px) and (max-height:700px){
+  #ticker{display:none}
+  #topbar{padding:8px 16px}
+  #hero-banner{height:70px}
+  #hero-body{padding:0 20px 12px;gap:14px}
+  #hero-av{width:74px;height:74px;margin-top:-30px}
+  #hero-av .deco{inset:-14px}
+  #hero-name{font-size:20px}
+  #hero-bio,#hero-brief{display:none}
+  #hero-status{margin-top:2px}
+  .hstat{padding:8px 12px}
+  .hstat .v{font-size:18px}
+  #hero{margin-bottom:12px}
+  .card{padding:14px 16px}
+  #main{padding-top:14px}
+}
+@media (min-width:761px) and (max-height:520px){
+  #hero-banner{height:44px}
+  #hero-av{width:58px;height:58px;margin-top:-22px}
+  #hero-stats{gap:6px}
+  .hstat .k{font-size:7.5px}
+  #topbar #tb-clock{display:none}
+}
+/* high scale factors (2x-3x): slightly tighter type so ultrawide-at-300% still fits real content */
+@media (min-width:761px) and (max-width:1200px) and (min-resolution:2.5dppx){
+  html{font-size:15px}
+  #main{padding:16px 18px}
+  .grid{gap:12px}
+}
+/* ============================================================
+   MOBILE CALM PASS — fewer chrome elements, more breathing room
+   ============================================================ */
+@media (max-width:760px){
+  /* --- top bar: title + save dot + focus only --- */
+  #topbar{padding:10px 16px;gap:8px;position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line);border-radius:0;margin:-16px -14px 12px;width:calc(100% + 28px)}
+  #tb-view{font-size:16px}
+  #tb-date{font-size:11px}
+  #tb-theme,#tb-cmd,#tb-clock{display:none}
+  #tb-save{font-size:0;width:8px;height:8px;border-radius:50%;background:var(--pos);padding:0;gap:0;opacity:0;transition:opacity .2s}
+  #tb-save.show{opacity:1;transform:none}
+  #tb-save svg{display:none}
+  #tb-sync{font-size:8.5px}
+  #tb-focus{padding:5px 9px;font-size:11px}
+  #tb-focus:not(.running) span.num{display:none}
+  #tb-focus:not(.running){min-width:0}
+  /* --- ticker: gone on phone (hero brief carries it) --- */
+  #ticker{display:none}
+  /* --- hero: shorter, denser, calmer --- */
+  #hero{margin-bottom:12px}
+  #hero-banner{height:84px}
+  #hero-body{padding:0 14px 14px;gap:12px}
+  #hero-av{width:72px;height:72px;margin-top:-34px}
+  #hero-av .deco{inset:-14px}
+  #hero-name{font-size:19px;letter-spacing:.02em}
+  #hero-handle{font-size:11px}
+  #hero-status{font-size:12px;margin-top:3px}
+  #hero-bio,#hero-brief{display:none}
+  #hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;margin-top:10px}
+  .hstat{padding:8px 4px;text-align:center;border-radius:12px;min-width:0}
+  .hstat .v{font-size:17px}
+  .hstat .k{font-size:7.5px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hstat.pl::after{display:none}
+  /* --- cards & density --- */
+  .card{padding:14px 14px 13px;border-radius:16px}
+  .card-head{margin-bottom:10px}
+  .eyebrow{font-size:9.5px}
+  .grid{gap:10px}
+  .card .sub[style*="--faint"]{display:none}       /* explanatory hint copy hides on phone */
+  .rowlist .row{padding:9px 8px}
+  .btn.sm{padding:7px 11px}
+  /* --- overview blocks --- */
+  .ov-grid{grid-template-columns:1fr}
+  .push-btns{grid-template-columns:repeat(4,1fr);gap:6px}
+  .push-btn{padding:10px 0;font-size:14px}
+  /* --- board: single lane on phone --- */
+  .board.mob{grid-template-columns:1fr}
+  .board.mob .lane{min-height:0}
+  .lane-tabs button .num{margin-left:6px;font-size:10px;color:var(--faint)}
+  .lane-tabs button.on .num{color:inherit}
+  /* --- beams / heavy fx off on phone --- */
+  .beam::before,.beam::after,.holo::after,.hstat.pl::after{display:none!important}
+  #bgfx{display:none}
+  .card{backdrop-filter:none}
+  /* --- dock: cleaner --- */
+  #rail{height:60px;padding:6px 8px;gap:2px;justify-content:space-between;
+    background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px)}
+  #rail-avatar{width:36px;height:36px}
+  .navbtn{width:40px;height:40px;border-radius:12px}
+  #main{padding:16px 14px 92px}
+  /* --- toast above dock --- */
+  #toast{bottom:78px}
+  /* --- big charts breathe --- */
+  .radar-wrap svg{max-width:240px;margin:0 auto}
+}
+@media (max-width:400px){
+  #hero-stats{grid-template-columns:repeat(2,1fr)}
+  .hstat .k{font-size:8px}
+  .hstat.streak{display:none}
+}
+
+/* ============================================================
+   MOTION LAYER — view transitions, press feedback, live theme swatches, count-ups
+   ============================================================ */
+@keyframes viewin{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+.view.active{animation:viewin .28s var(--ease)}
+.btn,.push-btn,.iconbtn,.navbtn,.check,.seg button,.deco-card,.theme-card{transition:transform .12s var(--ease),background .18s,color .18s,border-color .18s,box-shadow .18s}
+.btn:active,.push-btn:active,.iconbtn:active,.navbtn:active,.seg button:active,.deco-card:active,.theme-card:active{transform:scale(.96)}
+.check:active{transform:scale(.88)}
+.card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s}
+@media (hover:hover){.card:hover{transform:translateY(-1px);border-color:var(--line2)}}
+.hstat .v,.stat .value{font-variant-numeric:tabular-nums}
+.theme-card .theme-swatch{position:relative;overflow:hidden}
+.theme-card .theme-swatch::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);transform:translateX(-120%);transition:transform .8s var(--ease)}
+.theme-card:hover .theme-swatch::after,.theme-card.on .theme-swatch::after{transform:translateX(120%)}
+.theme-card.on{box-shadow:0 0 0 1px var(--accent),0 12px 34px -14px var(--glow)}
+/* theme-specific accents */
+html[data-theme="neon"] .hero-name,html[data-theme="neon"] #hero-name{text-shadow:0 0 18px rgba(255,61,166,.45),0 0 2px rgba(63,216,255,.6)}
+html[data-theme="neon"] .card{border-color:color-mix(in srgb,var(--accent) 12%,var(--line))}
+html[data-theme="monolith"] .card{border-color:#202020}
+html[data-theme="monolith"] .btn.primary{background:#F2F2F2;color:#050505}
+html[data-theme="ember"] #hero-banner{filter:saturate(1.15)}
+html[data-theme="sakura"] .card{border-radius:20px}
+html[data-theme="arctic"] .card{backdrop-filter:blur(14px)}
+/* subtle scanline overlay for neon (very faint) */
+html[data-theme="neon"] body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,var(--scan) 0 1px,transparent 1px 3px)}
+
+/* ============================================================
+   v32 — Keys vault, layout editor, iOS mobile pass
+   ============================================================ */
+.eyebrow.link,.row.link,.grow.link{cursor:pointer}
+.eyebrow.link:hover{color:var(--accent)}
+.row.link:hover{background:var(--surface2)}
+.row.link>svg:last-child{width:14px;height:14px;color:var(--faint)}
+/* layout editor */
+.ovedit-wrap{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+.ovedit-panel{position:sticky;top:80px}
+.ovlist{display:flex;flex-direction:column;gap:6px}
+.ovrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);transition:background .3s,border-color .3s}
+.ovrow .nm{font-size:13px;font-weight:600}
+.ovrow.moved{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.ovrow.hid{opacity:.6}
+.ovrow .iconbtn[disabled]{opacity:.25;pointer-events:none}
+.ovhid-h{font-family:var(--font-display);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:10px 0 2px}
+.ovnum{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;background:var(--surface3);color:var(--muted);flex-shrink:0}
+.ovblk{position:relative;outline:1.5px dashed color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:4px}
+.ovblk>.ovnum{position:absolute;top:-10px;left:-10px;background:var(--accent);color:var(--accent-ink);z-index:6;box-shadow:0 4px 12px -4px var(--glow)}
+.ovblk.moved{outline-color:var(--accent);animation:ovpulse 1.2s var(--ease)}
+@keyframes ovpulse{0%{box-shadow:0 0 0 0 var(--glow)}60%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.ovedit .card{pointer-events:none}
+.ovedit-wrap .card,.ovedit-wrap .ovblk{animation:none!important}   /* editing: no entrance fades, moves are the only motion */
+.ovedit .card .ovnum{pointer-events:auto}
+/* keys */
+.keys-gate{max-width:520px;margin:40px auto;padding:34px 30px}
+.keys-gate-in{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.keys-badge{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,var(--surface2));border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);color:var(--accent);box-shadow:0 0 34px -8px var(--glow)}
+.keys-badge svg{width:28px;height:28px}
+.keys-gate h3{font-family:var(--font-display);font-size:16px;letter-spacing:.14em;text-transform:uppercase}
+.keys-gate p{font-size:12.5px;color:var(--muted);line-height:1.6;max-width:380px}
+.keys-gate input{width:100%;max-width:320px;text-align:center;letter-spacing:.08em}
+.keys-gate .btn{min-width:200px;margin-top:4px}
+.keys-top{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.keys-list{display:flex;flex-direction:column;gap:8px}
+.key-row{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 92%,transparent)}
+.key-av{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-family:var(--font-display);font-size:18px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--kc),color-mix(in srgb,var(--kc) 60%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.key-main{min-width:0;cursor:pointer}
+.key-t{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.key-dom{font-size:10.5px;color:var(--faint);font-weight:400}
+.key-u{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.key-p{font-family:var(--font-mono);font-size:12px;color:var(--faint);letter-spacing:.14em;margin-top:3px;display:flex;align-items:center;gap:8px}
+.key-p.show{color:var(--text);letter-spacing:.02em}
+.key-p .st{width:28px;height:4px;border-radius:2px;background:var(--line2);position:relative;overflow:hidden}
+.key-p .st::after{content:"";position:absolute;left:0;top:0;bottom:0;background:var(--neg);width:25%}
+.key-p .st.s2::after{width:50%;background:#E9B44C}.key-p .st.s3::after{width:75%;background:var(--pos)}.key-p .st.s4::after{width:100%;background:var(--pos)}
+.key-act{display:flex;gap:2px}
+.key-act .iconbtn{width:34px;height:34px}
+a.iconbtn{display:grid;place-items:center;text-decoration:none}
+/* ---------- iOS mobile pass ---------- */
+@media (max-width:760px){
+  .ovedit-wrap{grid-template-columns:1fr}
+  .ovedit-panel{position:static}
+  /* section headers read like iOS grouped lists */
+  .card-head .eyebrow{font-size:10px}
+  /* rows: chevron affordance for links */
+  .row.link{padding-right:6px}
+  /* NOTES — iOS Notes proportions */
+  .notes-side{padding:8px 10px}
+  .note-search input{font-size:15px;padding:9px 12px;border-radius:12px}
+  .note-folders{gap:6px;margin:8px 0 6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
+  .note-folders button{white-space:nowrap;padding:5px 10px}
+  .note-item{padding:9px 10px;border-radius:12px}
+  .note-item .t{font-size:15px;font-weight:600}
+  .note-item .row2{font-size:12px;margin-top:2px}
+  .note-item+.note-item{margin-top:0}
+  .note-editor{padding:6px 12px 14px;min-height:0}
+  .note-bar{margin-bottom:2px}
+  #note-title{font-size:20px;padding:6px 0 2px}
+  .note-tools{padding:2px 0 6px;overflow-x:auto;flex-wrap:nowrap}
+  .note-tools button{min-width:36px;height:34px}
+  .note-tools .num{display:none}
+  #note-body{font-size:16px;line-height:1.6;min-height:46vh;padding:6px 0}
+  .note-sealed{padding:30px 16px}
+  /* KEYS mobile */
+  .keys-gate{margin:16px auto;padding:26px 18px}
+  .key-row{grid-template-columns:40px 1fr;padding:11px 12px;gap:10px}
+  .key-act{grid-column:1/-1;justify-content:flex-end;gap:2px;margin-top:2px}
+  .key-act .iconbtn{width:38px;height:36px}
+  .keys-top .sub{display:none}
+}
+
+/* ============================================================
+   RESPONSIVE FRAME — ultrawide, short viewports, high-DPI scaling
+   ============================================================ */
+/* very wide: centre the whole app as a frame instead of pinning left */
+@media (min-width:1900px){
+  #app{max-width:1880px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);box-shadow:0 0 120px -40px rgba(0,0,0,.8)}
+  #main{max-width:none;padding-left:34px;padding-right:34px}
+  .ov-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+}
+@media (min-width:2400px){
+  #app{max-width:2200px}
+  html{font-size:17px}
+}
+/* short desktop viewports (300% scaling on ultrawide, small laptops, split-screen): compact hero + chrome */
+@media (min-width:761px) and (max-height:700px){
+  #ticker{display:none}
+  #topbar{padding:8px 16px}
+  #hero-banner{height:70px}
+  #hero-body{padding:0 20px 12px;gap:14px}
+  #hero-av{width:74px;height:74px;margin-top:-30px}
+  #hero-av .deco{inset:-14px}
+  #hero-name{font-size:20px}
+  #hero-bio,#hero-brief{display:none}
+  #hero-status{margin-top:2px}
+  .hstat{padding:8px 12px}
+  .hstat .v{font-size:18px}
+  #hero{margin-bottom:12px}
+  .card{padding:14px 16px}
+  #main{padding-top:14px}
+}
+@media (min-width:761px) and (max-height:520px){
+  #hero-banner{height:44px}
+  #hero-av{width:58px;height:58px;margin-top:-22px}
+  #hero-stats{gap:6px}
+  .hstat .k{font-size:7.5px}
+  #topbar #tb-clock{display:none}
+}
+/* high scale factors (2x-3x): slightly tighter type so ultrawide-at-300% still fits real content */
+@media (min-width:761px) and (max-width:1200px) and (min-resolution:2.5dppx){
+  html{font-size:15px}
+  #main{padding:16px 18px}
+  .grid{gap:12px}
+}
+/* ============================================================
+   v35 — all-day events + subscriptions
+   ============================================================ */
+.chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);cursor:pointer}
+.chk input{width:16px;height:16px}
+.allday-strip{display:flex;gap:6px;flex-wrap:wrap;padding:6px 2px 8px}
+.wk-ev.allday{left:3px;right:3px;font-size:10px;padding:1px 6px;line-height:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:6px;z-index:2}
+.allday-strip .cal-ev{white-space:nowrap;-webkit-line-clamp:1;font-size:11px;padding:4px 9px;border-radius:999px}
+.mday-item .tm .alld{font-size:8.5px}
+.subs-hero{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.stat.big .value{font-size:34px}
+.subs-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--surface3);gap:2px}
+.subs-bar i{display:block;height:100%;min-width:3px;border-radius:2px}
+.subs-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);text-transform:capitalize}
+.subs-legend span{display:flex;align-items:center;gap:6px}
+.subs-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.subs-list{display:flex;flex-direction:column;gap:6px}
+.sub-row{display:grid;grid-template-columns:36px 1fr auto auto 32px;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--surface2) 55%,transparent);cursor:pointer;transition:border-color .15s,background .15s}
+.sub-row:hover{border-color:var(--line2);background:var(--surface2)}
+.sub-row.soon{border-color:color-mix(in srgb,var(--neg) 45%,transparent)}
+.sub-row.canc{opacity:.6;grid-template-columns:36px 1fr auto}
+.sub-av{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;color:var(--bg);background:var(--kc)}
+.sub-main{min-width:0}
+.sub-t{font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub-t .pill{font-family:var(--font-display);font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:6px;border:1px solid var(--line2);color:var(--muted)}
+.sub-t .pill.up{color:var(--neg);border-color:color-mix(in srgb,var(--neg) 50%,transparent)}
+.sub-s{font-size:11px;color:var(--faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub-s a{color:var(--accent);text-decoration:none}
+.sub-price{text-align:right;font-size:14px}
+.sub-price .cy{font-size:10px;color:var(--faint);margin-left:2px}
+.sub-mo{font-size:10.5px;color:var(--faint)}
+.sub-next{text-align:right;font-size:12px;min-width:74px}
+.sub-next .hot{color:var(--neg);font-weight:600}
+.subs-canc{margin-top:10px}
+.subs-canc summary{cursor:pointer;font-size:11.5px;color:var(--muted);padding:6px 0}
+.subs-canc .sub-row{margin-top:6px}
+@media (max-width:760px){
+  .sub-row{grid-template-columns:32px 1fr auto;gap:8px}
+  .sub-next{display:none}
+  .sub-row .iconbtn{display:none}
+  .stat.big .value{font-size:28px}
+}
+
+/* discipline skill wheel */
+.skill-sliders{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.skill-sliders label{display:grid;grid-template-columns:110px 1fr 24px;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.skill-sliders input[type=range]{width:100%;accent-color:var(--accent)}
+.skill-sliders b{text-align:right;color:var(--text)}
+@media (max-width:760px){.skill-sliders label{grid-template-columns:90px 1fr 22px;font-size:11.5px}}
+
+/* demo bar */
+#demo-bar{position:fixed;left:0;right:0;bottom:0;z-index:300;display:flex;align-items:center;gap:10px;padding:8px 14px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(16px);border-top:1px solid var(--line2);font-size:12px;color:var(--muted)}
+#demo-bar b{font-family:var(--font-display);letter-spacing:.24em;color:var(--accent);font-size:10px}
+#demo-bar .db-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--glow);animation:dflick 1.4s steps(2) infinite}
+#demo-bar a.btn{text-decoration:none}
+html.demo #main{padding-bottom:140px}
+@media (max-width:760px){#demo-bar{bottom:64px;padding:7px 10px;font-size:11px}#demo-bar .db-txt{display:none}html.demo #main{padding-bottom:160px}#demo-bar .btn.sm{padding:6px 9px}}
 </style>
 </head>
 <body>
@@ -1206,6 +1619,12 @@ html[data-theme="neon"] body::after{content:"";position:fixed;inset:0;pointer-ev
 </div>
 
 <div id="onboard" role="dialog" aria-label="Set up HQ" style="display:none"></div>
+<div id="demo-bar" style="display:none">
+  <span class="db-dot"></span><b>DEMO</b><span class="db-txt">Live preview — saves in this browser only, no cloud, no passphrase.</span>
+  <div style="flex:1"></div>
+  <a class="btn sm" href="https://github.com/" target="_blank" rel="noopener" id="db-repo">Deploy your own</a>
+  <button class="btn ghost sm" onclick="demoReset()">Reset demo</button>
+</div>
 <div id="palette" role="dialog" aria-label="Command palette">
   <div id="pal-box">
     <input id="pal-input" placeholder="Type a command — go, add, log, theme…" autocomplete="off">
@@ -1219,6 +1638,9 @@ html[data-theme="neon"] body::after{content:"";position:fixed;inset:0;pointer-ev
 <input type="file" id="deco-file" accept="image/png,image/webp" style="display:none">
 
 <script>
+/* DEMO MODE: no gate, no cloud, browser-only. Triggered by /demo route, ?demo=1, github.io hosting, or window.HQ_DEMO. */
+const DEMO=(()=>{try{return !!(window.HQ_DEMO||location.search.includes('demo=1')||/github\.io$/.test(location.hostname)||location.pathname.startsWith('/demo'));}catch(e){return false;}})();
+
 'use strict';
 /* ============================================================
    ICONS
@@ -1255,6 +1677,14 @@ const I=(name,cls='')=>{
     zap:'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>',
     wedge:'<path d="M7 3v11.5L16.5 20 18 17.5 9.5 12.8V3z"/>',
     lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="15.5" r="1.6"/>',
+    up:'<path d="m6 15 6-6 6 6"/>',
+    down:'<path d="m6 9 6 6 6-6"/>',
+    key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l2 2M14 9l2 2"/>',
+    copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+    eye:'<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+    eyeoff:'<path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.9 5.1A10.5 10.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4-.8"/>',
+    dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="8.5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="8.5" cy="15.5" r="1"/><circle cx="15.5" cy="15.5" r="1"/>',
+
     driver:'<path d="M17 3 6.5 14.5"/><path d="M6.5 14.5c-2.6 0-4.5 1.3-4.5 3.2S4 21 6.5 21s4.8-1.4 4.8-3.3c0-1.5-1.6-3.2-4.8-3.2z"/>'
   };
   return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p[name]||p.dot}</svg>`;
@@ -1263,11 +1693,123 @@ const I=(name,cls='')=>{
 /* ============================================================
    STORE
    ============================================================ */
-const KEY='hq-v1';
+const KEY=DEMO?'hq-demo-v1':'hq-v1';
 const OLDKEY='hq-v0';
 const todayISO=(d=new Date())=>{const z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
 const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return todayISO(d)};
 const uid=()=>Math.random().toString(36).slice(2,9);
+
+/* ============================================================
+   DISCIPLINES — one Fitness module, many sports. Each discipline defines its daily metric,
+   session types, skill wheel, and a 7-day program template. Users pick in onboarding / Settings.
+   ============================================================ */
+const DISCIPLINES={
+  calisthenics:{name:'Calisthenics',sub:'Bodyweight · daily reps',metric:{label:'Pushups',unit:'reps',target:100,quick:[10,20,25,50]},
+    sessions:['Push','Pull','Legs','Core','Skills','Full body'],skills:['Push strength','Pull strength','Core','Mobility','Endurance','Balance','Explosiveness'],
+    program:[
+      {name:'Recovery',note:'Off day. Recovery is part of the program.',ex:[['Easy walk','20 min, outside'],['Couch stretch','2×60s per side'],['Doorway chest stretch','2×45s']]},
+      {name:'Push Volume',note:'Never to failure — stop 2 reps shy every set.',ex:[['REPS','TGT total — sets of SET through the day'],['Pike pushups','3×8'],['Chair dips','3×10'],['Plank','3×45s']]},
+      {name:'Pull + Core',note:'Balance the pressing to keep the shoulders happy.',ex:[['Towel rows','4×10, slow negatives'],['REPS','HALF total, easy pace'],['Hollow hold','3×30s'],['Side plank','3×30s per side']]},
+      {name:'Deload + Walk',note:'Volume stays honest because this day exists.',ex:[['REPS','HALF total, nothing hard'],['Walk','25 min'],['90/90 hip switches','2×10']]},
+      {name:'Legs + Push',note:'Legs carry everything else.',ex:[['Squats','4×15'],['Reverse lunges','3×10 per leg'],['REPS','TGT total — sets of SET'],['Wall sit','3×45s']]},
+      {name:'Athletic Power',note:'Rotation, hips, and speed.',ex:[['Thoracic windmills','2×8 per side'],['90/90 hips','2×10'],['Rotational throws','3×8 per side'],['Scap pushups','3×12'],['REPS','TGT total']]},
+      {name:'Max Test',note:'One number. Log it.',ex:[['Warmup REPS','2×10 easy'],['MAX SET — one clean set','write it down'],['Backoff sets','3× half of the max'],['Plank','2×60s']]}]},
+  lifting:{name:'Strength training',sub:'Barbell · dumbbell · gym',metric:{label:'Training minutes',unit:'min',target:60,quick:[15,30,45,60]},
+    sessions:['Push','Pull','Legs','Upper','Lower','Full body','Deload'],skills:['Squat','Bench','Deadlift','Overhead press','Rows','Conditioning','Mobility'],
+    program:[
+      {name:'Rest',note:'Sleep is where the lift happens.',ex:[['Walk','20–30 min'],['Hips + T-spine mobility','10 min']]},
+      {name:'Upper — Push',note:'Bench day. Leave 1–2 reps in reserve.',ex:[['Bench press','4×6'],['Overhead press','3×8'],['Incline DB press','3×10'],['Triceps','3×12']]},
+      {name:'Lower — Squat',note:'Brace, depth, control.',ex:[['Back squat','4×5'],['Romanian deadlift','3×8'],['Walking lunges','3×10/leg'],['Calves','3×15']]},
+      {name:'Active recovery',note:'Blood flow, not effort.',ex:[['Zone-2 cardio','30 min'],['Mobility flow','15 min']]},
+      {name:'Upper — Pull',note:'Pull twice what you push, shoulders thank you.',ex:[['Weighted pull-ups / lat pulldown','4×6'],['Barbell row','4×8'],['Face pulls','3×15'],['Biceps','3×12']]},
+      {name:'Lower — Hinge',note:'Deadlift day. Perfect reps, no grinders.',ex:[['Deadlift','5×3'],['Front squat','3×6'],['Hip thrust','3×10'],['Hanging leg raise','3×12']]},
+      {name:'Conditioning',note:'Short, hard, done.',ex:[['Sled / bike intervals','8×30s on / 60s off'],['Farmer carries','4×40m'],['Core circuit','10 min']]}]},
+  running:{name:'Running',sub:'Road · trail · track',metric:{label:'Kilometres',unit:'km',target:5,quick:[1,3,5,10]},
+    sessions:['Easy','Tempo','Intervals','Long run','Recovery','Strides','Race'],skills:['Endurance','Speed','Threshold','Cadence','Strength','Recovery','Mental'],
+    program:[
+      {name:'Rest',note:'Legs rebuild today.',ex:[['Walk or full rest','—'],['Foam roll calves + quads','10 min']]},
+      {name:'Easy run',note:'Conversational pace. Boring is correct.',ex:[['Easy run','TGT km, zone 2'],['Strides','4×20s after']]},
+      {name:'Intervals',note:'Quality day — warm up properly.',ex:[['Warm-up','2 km easy'],['Intervals','6×800m @ 5k pace, 90s jog'],['Cool-down','1.5 km']]},
+      {name:'Easy + strength',note:'Runners who lift stay runners.',ex:[['Easy run','HALF km'],['Single-leg squats','3×8/leg'],['Calf raises','3×15'],['Plank','3×45s']]},
+      {name:'Tempo',note:'Comfortably hard — you could say a sentence, not a paragraph.',ex:[['Warm-up','2 km'],['Tempo','20 min @ threshold'],['Cool-down','1.5 km']]},
+      {name:'Recovery',note:'Slowest run of the week, on purpose.',ex:[['Recovery jog','HALF km'],['Mobility','10 min']]},
+      {name:'Long run',note:'Time on feet builds the engine.',ex:[['Long run','TGT × 2 km, easy'],['Refuel within 30 min','protein + carbs']]}]},
+  cycling:{name:'Cycling',sub:'Road · gravel · trainer',metric:{label:'Kilometres',unit:'km',target:20,quick:[5,10,20,40]},
+    sessions:['Endurance','Tempo','Intervals','Climbing','Recovery','Group ride'],skills:['Endurance','Power','Climbing','Sprint','Cadence','Recovery','Bike handling'],
+    program:[
+      {name:'Rest',note:'Off the bike.',ex:[['Walk','20 min'],['Hip flexor stretch','2×60s']]},
+      {name:'Endurance',note:'Zone 2, high cadence.',ex:[['Endurance ride','TGT km, 90 rpm']]},
+      {name:'Intervals',note:'VO2 work — short and brutal.',ex:[['Warm-up','15 min'],['Intervals','5×4 min hard / 4 min easy'],['Cool-down','10 min']]},
+      {name:'Recovery spin',note:'Legs loose.',ex:[['Easy spin','HALF km']]},
+      {name:'Tempo',note:'Sweet spot.',ex:[['Warm-up','15 min'],['Sweet spot','2×20 min'],['Cool-down','10 min']]},
+      {name:'Strength',note:'Off-bike work keeps you upright at 60.',ex:[['Goblet squats','3×12'],['Single-leg RDL','3×8/leg'],['Plank + side plank','3×45s']]},
+      {name:'Long ride',note:'Fuel every 30 min.',ex:[['Long ride','TGT × 2.5 km, endurance pace']]}]},
+  swimming:{name:'Swimming',sub:'Pool · open water',metric:{label:'Metres',unit:'m',target:1000,quick:[250,500,1000,1500]},
+    sessions:['Technique','Endurance','Sprint','Kick / pull','Open water','Recovery'],skills:['Freestyle','Backstroke','Breaststroke','Butterfly','Turns','Endurance','Breathing'],
+    program:[
+      {name:'Rest',note:'Shoulders recover.',ex:[['Band work','10 min'],['Thoracic mobility','10 min']]},
+      {name:'Technique',note:'Slow and perfect.',ex:[['Drill set','8×50 drill/swim'],['Easy swim','HALF m']]},
+      {name:'Endurance',note:'Steady effort.',ex:[['Main set','TGT m continuous or 5×200']]},
+      {name:'Kick / pull',note:'Isolate the engine.',ex:[['Kick','6×100'],['Pull','6×100']]},
+      {name:'Sprint',note:'Fast, full rest.',ex:[['Warm-up','400'],['Sprints','10×50 fast, 30s rest'],['Cool-down','200']]},
+      {name:'Recovery',note:'Feel for the water.',ex:[['Easy swim','HALF m']]},
+      {name:'Long swim',note:'Time in the water.',ex:[['Long swim','TGT × 1.5 m']]}]},
+  team:{name:'Team sport',sub:'Soccer · hockey · basketball…',metric:{label:'Training minutes',unit:'min',target:60,quick:[30,45,60,90]},
+    sessions:['Practice','Game','Skills','Conditioning','Film','Recovery','Gym'],
+    skillsBySport:{soccer:['Shooting','Passing','Dribbling','Defending','Stamina','Speed','Vision'],hockey:['Skating','Shooting','Passing','Stickhandling','Defense','Stamina','Vision'],basketball:['Shooting','Ball handling','Passing','Defense','Rebounding','Stamina','IQ'],football:['Speed','Strength','Agility','Hands','Tackling','Stamina','IQ'],volleyball:['Serve','Pass','Set','Attack','Block','Footwork','Stamina'],baseball:['Hitting','Fielding','Throwing','Base running','Pitching','Eye','Stamina'],rugby:['Tackling','Passing','Kicking','Rucking','Speed','Strength','Stamina'],other:['Technique','Fitness','Speed','Strength','Tactics','Teamwork','Recovery']},
+    skills:['Technique','Fitness','Speed','Strength','Tactics','Teamwork','Recovery'],
+    program:[
+      {name:'Recovery',note:'Bodies before ball.',ex:[['Walk / swim','20 min'],['Mobility','15 min']]},
+      {name:'Skills',note:'Touches beat talent.',ex:[['Sport-specific drills','TGT min'],['Weak-side reps','15 min']]},
+      {name:'Conditioning',note:'Game speed, game rests.',ex:[['Sprint intervals','10×40m'],['Shuttle runs','6×'],['Core','10 min']]},
+      {name:'Practice',note:'Team session.',ex:[['Team practice','TGT min']]},
+      {name:'Strength',note:'Injury-proofing.',ex:[['Squats / lunges','3×10'],['Nordic curls','3×6'],['Push + pull','3×10 each'],['Ankle + hip mobility','10 min']]},
+      {name:'Practice + film',note:'Watch yourself once a week.',ex:[['Team practice','TGT min'],['Film review','20 min']]},
+      {name:'Game day',note:'Warm up like it matters.',ex:[['Dynamic warm-up','20 min'],['Game','—'],['Cool-down + stretch','10 min']]}]},
+  combat:{name:'Combat sports',sub:'Boxing · BJJ · MMA · karate',metric:{label:'Training minutes',unit:'min',target:60,quick:[30,60,90]},
+    sessions:['Technique','Sparring','Conditioning','Bag work','Mobility','Competition'],skills:['Striking','Grappling','Footwork','Defense','Cardio','Strength','Flexibility'],
+    program:[
+      {name:'Rest',note:'Heal.',ex:[['Walk','20 min'],['Hips + shoulders','15 min']]},
+      {name:'Technique',note:'Slow reps, perfect form.',ex:[['Shadow work','15 min'],['Partner drills','TGT min']]},
+      {name:'Conditioning',note:'Rounds format.',ex:[['Bag / pads','6×3 min'],['Sprints','8×30s'],['Core','10 min']]},
+      {name:'Sparring',note:'Light, controlled, learn.',ex:[['Sparring','TGT min']]},
+      {name:'Strength',note:'Push, pull, hinge, carry.',ex:[['Compound lifts','3×5'],['Carries','4×40m'],['Neck work','3×15']]},
+      {name:'Technique',note:'Weak side today.',ex:[['Drills','TGT min']]},
+      {name:'Open mat / mobility',note:'Play.',ex:[['Open mat','TGT min'],['Long stretch','20 min']]}]},
+  general:{name:'General fitness',sub:'Move more · feel better',metric:{label:'Active minutes',unit:'min',target:30,quick:[10,15,30,45]},
+    sessions:['Cardio','Strength','Class','Walk','Mobility','Sport'],skills:['Cardio','Strength','Mobility','Balance','Core','Consistency','Sleep'],
+    program:[
+      {name:'Rest',note:'Easy day.',ex:[['Walk','20 min']]},
+      {name:'Full body',note:'Simple and complete.',ex:[['Squats','3×12'],['Push-ups','3×10'],['Rows','3×10'],['Plank','3×30s']]},
+      {name:'Cardio',note:'Get the heart up.',ex:[['Brisk walk / jog / bike','TGT min']]},
+      {name:'Mobility',note:'Move every joint.',ex:[['Mobility flow','20 min']]},
+      {name:'Full body',note:'Repeat with a little more.',ex:[['Squats','3×15'],['Push-ups','3×12'],['Rows','3×12'],['Dead bug','3×10']]},
+      {name:'Cardio + core',note:'Sweat.',ex:[['Cardio','TGT min'],['Core circuit','10 min']]},
+      {name:'Play',note:'Something you enjoy.',ex:[['Sport / hike / dance','TGT × 2 min']]}]},
+  yoga:{name:'Yoga & mobility',sub:'Flexibility · breath · calm',metric:{label:'Minutes on the mat',unit:'min',target:20,quick:[10,20,30,45]},
+    sessions:['Flow','Yin','Mobility','Breathwork','Strength','Meditation'],skills:['Flexibility','Balance','Core','Breath','Focus','Strength','Recovery'],
+    program:[
+      {name:'Rest / breathwork',note:'Ten quiet minutes.',ex:[['Box breathing','10 min']]},
+      {name:'Flow',note:'Move with the breath.',ex:[['Vinyasa flow','TGT min']]},
+      {name:'Yin',note:'Long holds.',ex:[['Yin sequence','TGT min, 3–5 min holds']]},
+      {name:'Mobility',note:'Hips and spine.',ex:[['Hip openers','15 min'],['Spinal waves','10 min']]},
+      {name:'Strength flow',note:'Hold the hard shapes.',ex:[['Power flow','TGT min']]},
+      {name:'Balance',note:'Wobble is progress.',ex:[['Balance sequence','20 min']]},
+      {name:'Long practice',note:'Whatever your body asks for.',ex:[['Full practice','TGT × 2 min']]}]},
+  custom:{name:'Custom',sub:'Name your own metric',metric:{label:'Reps',unit:'reps',target:50,quick:[5,10,20,50]},
+    sessions:['Session','Skills','Conditioning','Recovery'],skills:['Skill 1','Skill 2','Skill 3','Skill 4','Skill 5','Skill 6','Skill 7'],
+    program:[{name:'Rest',note:'',ex:[['Walk','20 min']]},{name:'Session',note:'',ex:[['REPS','TGT']]},{name:'Session',note:'',ex:[['REPS','TGT']]},{name:'Easy',note:'',ex:[['REPS','HALF']]},{name:'Session',note:'',ex:[['REPS','TGT']]},{name:'Session',note:'',ex:[['REPS','TGT']]},{name:'Long',note:'',ex:[['REPS','TGT × 1.5']]}]}
+};
+function disc(){return DISCIPLINES[(S.sport&&S.sport.id)||'calisthenics']||DISCIPLINES.calisthenics;}
+function discSkillsDefault(){const d=disc();if(d.skillsBySport)return d.skillsBySport[S.sport.teamSport]||d.skills;return d.skills;}
+function sportApply(id,teamSport,metric){
+  const d=DISCIPLINES[id]||DISCIPLINES.general;
+  const m=Object.assign({},d.metric,metric||{});
+  S.sport={id,teamSport:teamSport||'',metric:m,skills:(S.sport&&S.sport.id===id&&S.sport.skills)||discSkillsDefaultFor(id,teamSport).map(k=>({k,v:5}))};
+  S.fit.exercise=m.label;S.fit.unit=m.unit;S.pushups.target=m.target;
+}
+function discSkillsDefaultFor(id,teamSport){const d=DISCIPLINES[id]||DISCIPLINES.general;if(d.skillsBySport)return d.skillsBySport[teamSport]||d.skills;return d.skills;}
+const TEAM_SPORTS=[['soccer','Soccer'],['hockey','Hockey'],['basketball','Basketball'],['football','Football'],['volleyball','Volleyball'],['baseball','Baseball'],['rugby','Rugby'],['other','Other']];
 
 function seed(){
   const t=todayISO();
@@ -1282,6 +1824,7 @@ function seed(){
     modules:{calendar:true,work:true,tasks:true,fitness:true,golf:false,money:true,habits:true,notes:true},
     partner:'',
     fit:{exercise:'Pushups',unit:'reps'},
+    sport:{id:'calisthenics',teamSport:'',metric:{label:'Pushups',unit:'reps',target:100,quick:[10,20,25,50]},skills:[]},
     events:[],
     tasks:[{id:uid(),title:'Set up your first project',biz:'work',prio:2,status:'todo',due:addDays(t,3)}],
     projects:[],
@@ -1342,9 +1885,14 @@ function backfillState(){
   if(!S.rangeScript)S.rangeScript={date:'',done:{}};
   if(!S.portfolio)S.portfolio={finnhubKey:'',holdings:[],quotes:{},updated:0};
   if(S.profile.deco===undefined)S.profile.deco='orbit';
+  if(!S.keys)S.keys={salt:null,hash:null,enc:null,updated:0};
+  if(!S.subs)S.subs=[];
   if(!S.areas||!S.areas.length)S.areas=[{id:'work',name:'Work',color:'#C2A264',kind:'work'},{id:'personal',name:'Personal',color:'#4E9E77',kind:'life'}];
-  if(!S.modules)S.modules={calendar:true,work:true,tasks:true,fitness:true,golf:false,money:true,habits:true,notes:true};
+  if(!S.modules)S.modules={calendar:true,work:true,tasks:true,fitness:true,golf:false,money:true,habits:true,notes:true,keys:true};
+  if(S.modules.keys===undefined)S.modules.keys=true;
   if(!S.fit)S.fit={exercise:'Pushups',unit:'reps'};
+  if(!S.sport||!S.sport.metric)S.sport={id:'calisthenics',teamSport:'',metric:{label:S.fit.exercise||'Pushups',unit:S.fit.unit||'reps',target:S.pushups.target||100,quick:[10,20,25,50]},skills:[]};
+  if(!S.sport.skills||!S.sport.skills.length){const d=DISCIPLINES[S.sport.id]||DISCIPLINES.calisthenics;const ks=d.skillsBySport?(d.skillsBySport[S.sport.teamSport]||d.skills):d.skills;S.sport.skills=ks.map(k=>({k,v:5}));}
   if(S.partner===undefined)S.partner='';
   if(S.setup===undefined)S.setup=false;
   if(!S.layout)S.layout={ov:['push','today','p1','eng','habits'],hid:[]};
@@ -1410,6 +1958,7 @@ function scheduleSync(){
   SYNC.timer=setTimeout(pushState,1200);
 }
 async function pushState(){
+  if(DEMO)return;
   if(!SYNC.on||SYNC.busy)return;
   SYNC.busy=true;
   try{
@@ -1428,6 +1977,7 @@ async function pushState(){
   SYNC.busy=false;
 }
 async function pullState(){
+  if(DEMO){SYNC.on=false;return;}
   try{
     const r=await fetch('/api/state',{cache:'no-store'});
     if(!r.ok)return;                       /* 401/404 -> stay in local mode */
@@ -1527,8 +2077,10 @@ function ring(val,max,size=104){
   </svg>`;
 }
 
-function radarChart(){
-  const sk=S.golf.skills,n=sk.length,size=224,cx=size/2,cy=size/2+2,R=80;
+function radarChart(skills){
+  const sk=skills||S.golf.skills,n=sk.length,size=224,cx=size/2,cy=size/2+2,R=80;
+  const isGolf=!skills||skills===S.golf.skills;
+  const abbr=k=>{const w=k.replace(/[^A-Za-z ]/g,'').split(' ').filter(Boolean);return (w.length>1?w.map(x=>x[0]).join('').slice(0,3):k.slice(0,3)).toUpperCase();};
   const ang=i=>-Math.PI/2+i*2*Math.PI/n;
   const pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
   const ringPath=r=>[...Array(n)].map((_,i)=>{const[x,y]=pt(i,r);return(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}).join(' ')+' Z';
@@ -1539,7 +2091,7 @@ function radarChart(){
     ${sk.map((_,i)=>{const[x,y]=pt(i,R);return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`}).join('')}
     <path d="${poly}" fill="color-mix(in srgb,var(--accent) 22%,transparent)" stroke="var(--accent)" stroke-width="2" style="filter:drop-shadow(0 0 9px var(--glow))"/>
     ${sk.map((s,i)=>{const[x,y]=pt(i,R*s.v/10);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="${s.v>=7?'var(--pos)':s.v<=3?'var(--neg)':'var(--accent)'}"/>`}).join('')}
-    ${sk.map((s,i)=>{const[x,y]=pt(i,R+17);return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" style="font-family:var(--font-display);font-size:9px;letter-spacing:.1em;fill:${s.v>=7?'var(--pos)':s.v<=3?'var(--neg)':'var(--muted)'}">${LB[i]||s.k.slice(0,2).toUpperCase()}</text>`}).join('')}
+    ${sk.map((s,i)=>{const[x,y]=pt(i,R+17);return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" style="font-family:var(--font-display);font-size:9px;letter-spacing:.1em;fill:${s.v>=7?'var(--pos)':s.v<=3?'var(--neg)':'var(--muted)'}">${isGolf?(LB[i]||s.k.slice(0,2).toUpperCase()):abbr(s.k)}</text>`}).join('')}
   </svg>`;
 }
 function opsBrief(){
@@ -1562,6 +2114,7 @@ function buildTicker(){
     `PL <b>${S.xp.toLocaleString()}</b> · ${rankName().toUpperCase()}`,
     ...(S.modules.fitness?[`${esc(S.fit.exercise.toUpperCase())} <b>${pushToday()}</b>/${S.pushups.target}`]:[]),
     `NET <span class="${net>=0?'up':'dn'}">${fmtMoney(net)}</span>`,
+    ...(S.subs&&subsActive().length?[`SUBS <b>${fmtMoney(subsMonthlyTotal())}</b>/MO`]:[]),
     `TASKS OPEN <b>${S.tasks.filter(x=>x.status!=='done').length}</b>`,
     ...(S.modules.golf?[`HCP <b>${S.golf.handicap}</b>`]:[]),
     `STREAK <b>${Math.max(0,...S.habits.map(habitStreak))}D</b>`,
@@ -1659,6 +2212,102 @@ const DECO_SVGS={
     <circle cx="70" cy="131" r="7.5" fill="#F7F7F2" stroke="#B9C2B9" stroke-width="1.2" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"/>
     ${[[67,129],[72,128],[69,133],[73,132]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".8" fill="#C9CFC9"/>`).join('')}`
 };
+
+/* ---------- HIGH-END PROCEDURAL SET — filters, turbulence, glow (light/energy family) ---------- */
+const DECO_FX={
+  solar:`<defs><radialGradient id="fxSolG" cx=".5" cy=".5" r=".5"><stop offset=".78" stop-color="#FFE9A8" stop-opacity="0"/><stop offset=".9" stop-color="#FFD470"/><stop offset="1" stop-color="#FF8A2A" stop-opacity="0"/></radialGradient>
+    <filter id="fxSolCor" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"><animate attributeName="seed" values="1;9;1" dur="6s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="9"/><feGaussianBlur stdDeviation="1.4"/></filter>
+    <filter id="fxGlow8"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="66" fill="url(#fxSolG)"/>
+    <g filter="url(#fxSolCor)"><circle cx="70" cy="70" r="63" fill="none" stroke="#FFB84A" stroke-width="5" opacity=".9"/><circle cx="70" cy="70" r="66" fill="none" stroke="#FFF1C4" stroke-width="1.5" opacity=".9"/></g>
+    <g class="dspin"><circle cx="70" cy="7" r="5" fill="#FFF7E0" filter="url(#fxGlow8)"/><circle cx="70" cy="7" r="12" fill="#FFD470" opacity=".22" filter="url(#fxGlow8)"/></g>
+    <g class="dspin-rev"><ellipse cx="70" cy="70" rx="68" ry="20" fill="none" stroke="#FFD470" stroke-width=".8" opacity=".35"/></g>`,
+  hellflame:`<defs><linearGradient id="fxHfG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6A0FA6"/><stop offset=".4" stop-color="#FF2E86"/><stop offset=".75" stop-color="#FF8A2E"/><stop offset="1" stop-color="#FFF3B8"/></linearGradient>
+    <filter id="fxHfF" x="-40%" y="-40%" width="180%" height="180%"><feTurbulence type="turbulence" baseFrequency=".07 .11" numOctaves="2" seed="7"><animate attributeName="baseFrequency" values=".07 .11;.09 .09;.07 .11" dur="2.6s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="10"/><feGaussianBlur stdDeviation=".8"/></filter>
+    <filter id="fxHfGlow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="62" fill="none" stroke="#FF2E86" stroke-width="12" opacity=".35" filter="url(#fxHfGlow)"/>
+    <g filter="url(#fxHfF)">
+      <g class="dspin-slow">${[0,26,58,84,118,150,176,206,238,262,296,326].map((a,i)=>`<path d="M70 -14 C64 2 63 12 70 ${22+(i%3)*4} C77 12 76 2 70 -14 Z" transform="rotate(${a} 70 70)" fill="url(#fxHfG)" opacity="${.75+(i%2)*.2}"/>`).join('')}</g>
+      <g class="dspin-rev">${[12,70,132,196,250,312].map(a=>`<path d="M70 -6 C66 4 66 10 70 18 C74 10 74 4 70 -6 Z" transform="rotate(${a} 70 70)" fill="#FFF3B8" opacity=".85"/>`).join('')}</g>
+    </g>
+    <circle cx="70" cy="70" r="59" fill="none" stroke="#FFB36A" stroke-width="1.2" opacity=".6"/>`,
+  neonruby:`<defs><filter id="fxNeR"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#FF1F4B" stroke-width="7" opacity=".28" filter="url(#fxNeR)"/>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#FF3D63" stroke-width="3.2" filter="url(#fxNeR)" class="dflick"/>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#FFD5DD" stroke-width="1" opacity=".9"/>`,
+  neonamethyst:`<defs><filter id="fxNeA"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#9B5CFF" stroke-width="7" opacity=".28" filter="url(#fxNeA)"/>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#B57BFF" stroke-width="3.2" filter="url(#fxNeA)" class="dflick"/>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#EADBFF" stroke-width="1" opacity=".9"/>`,
+  cycling:`<defs><linearGradient id="fxCyG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF3B3B"/><stop offset=".25" stop-color="#FFC63B"/><stop offset=".5" stop-color="#3BFF7A"/><stop offset=".75" stop-color="#3B9BFF"/><stop offset="1" stop-color="#C63BFF"/></linearGradient>
+    <filter id="fxCyGl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g class="dspin"><circle cx="70" cy="70" r="65" fill="none" stroke="url(#fxCyG)" stroke-width="3.4" filter="url(#fxCyGl)"/><circle cx="70" cy="70" r="65" fill="none" stroke="#fff" stroke-width=".8" opacity=".55"/></g>`,
+  vapor:`<defs><linearGradient id="fxVpG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2AE6FF"/><stop offset=".5" stop-color="#3B6BFF"/><stop offset="1" stop-color="#FF3DA6"/></linearGradient>
+    <filter id="fxVpGl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g class="dspin-rev"><circle cx="70" cy="70" r="65" fill="none" stroke="url(#fxVpG)" stroke-width="3.6" filter="url(#fxVpGl)"/><circle cx="70" cy="70" r="65" fill="none" stroke="#fff" stroke-width=".8" opacity=".5"/></g>`,
+  ripples:`<defs><filter id="fxRpGl"><feGaussianBlur stdDeviation="1.6"/></filter></defs>
+    ${[0,1,2].map(i=>`<circle cx="70" cy="70" r="60" fill="none" stroke="#F1DDA8" stroke-width="1.6" filter="url(#fxRpGl)" opacity="0"><animate attributeName="r" values="58;72" dur="3.6s" begin="${i*1.2}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.75;0" dur="3.6s" begin="${i*1.2}s" repeatCount="indefinite"/></circle>`).join('')}
+    <circle cx="70" cy="70" r="63" fill="none" stroke="#F1DDA8" stroke-width="1.2" opacity=".55"/>`,
+  ripplesarctic:`<defs><filter id="fxRaGl"><feGaussianBlur stdDeviation="1.6"/></filter></defs>
+    ${[0,1,2].map(i=>`<circle cx="70" cy="70" r="60" fill="none" stroke="#BFE7FF" stroke-width="1.6" filter="url(#fxRaGl)" opacity="0"><animate attributeName="r" values="58;72" dur="3.6s" begin="${i*1.2}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.75;0" dur="3.6s" begin="${i*1.2}s" repeatCount="indefinite"/></circle>`).join('')}
+    <circle cx="70" cy="70" r="63" fill="none" stroke="#BFE7FF" stroke-width="1.2" opacity=".55"/>`,
+  electric:`<defs><filter id="fxElF" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="3" seed="2"><animate attributeName="seed" values="1;30" dur="1.2s" repeatCount="indefinite" calcMode="discrete"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/></filter>
+    <filter id="fxElGl"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="65" fill="none" stroke="#F4D7E8" stroke-width="6" opacity=".16" filter="url(#fxElGl)"/>
+    <g filter="url(#fxElF)"><circle cx="70" cy="70" r="65" fill="none" stroke="#FFE7F3" stroke-width="1.6" filter="url(#fxElGl)"/><circle cx="70" cy="70" r="63" fill="none" stroke="#F2A9D3" stroke-width=".9" opacity=".8"/></g>`,
+  moon:`<defs><radialGradient id="fxMoG" cx=".3" cy=".3" r=".8"><stop offset="0" stop-color="#FAF7EE"/><stop offset=".55" stop-color="#CFCABA"/><stop offset="1" stop-color="#6E6A60"/></radialGradient>
+    <filter id="fxMoCr" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".14" numOctaves="4" seed="5" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .6 0" result="a"/><feComposite in="SourceGraphic" in2="a" operator="in" result="tex"/><feBlend in="SourceGraphic" in2="tex" mode="multiply"/></filter>
+    <mask id="fxMoM"><rect width="140" height="140" fill="#000"/><circle cx="70" cy="70" r="69" fill="#fff"/><circle cx="70" cy="70" r="53" fill="#000"/><circle cx="92" cy="60" r="66" fill="#000"/></mask>
+    <filter id="fxMoGl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="66" fill="none" stroke="#B9C6E6" stroke-width="7" opacity=".22" filter="url(#fxMoGl)"/>
+    <g mask="url(#fxMoM)"><circle cx="70" cy="70" r="69" fill="url(#fxMoG)" filter="url(#fxMoCr)"/><circle cx="16" cy="60" r="4" fill="#8A877C" opacity=".4"/><circle cx="12" cy="86" r="2.6" fill="#8A877C" opacity=".4"/><circle cx="24" cy="106" r="3.4" fill="#8A877C" opacity=".35"/></g>
+    ${[[110,26],[126,54],[118,100],[98,122]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.4" fill="#FFF" class="dtwinkle" style="animation-delay:${i*.6}s"/>`).join('')}`,
+  bloodmoon:`<defs><radialGradient id="fxBmG" cx=".3" cy=".3" r=".8"><stop offset="0" stop-color="#FFA987"/><stop offset=".55" stop-color="#C8452B"/><stop offset="1" stop-color="#4A0F0A"/></radialGradient>
+    <filter id="fxBmCr" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".14" numOctaves="4" seed="9" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .6 0" result="a"/><feComposite in="SourceGraphic" in2="a" operator="in" result="tex"/><feBlend in="SourceGraphic" in2="tex" mode="multiply"/></filter>
+    <mask id="fxBmM"><rect width="140" height="140" fill="#000"/><circle cx="70" cy="70" r="69" fill="#fff"/><circle cx="70" cy="70" r="53" fill="#000"/><circle cx="92" cy="60" r="66" fill="#000"/></mask>
+    <filter id="fxBmGl"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="66" fill="none" stroke="#FF5A3C" stroke-width="7" opacity=".28" filter="url(#fxBmGl)"/>
+    <g mask="url(#fxBmM)"><circle cx="70" cy="70" r="69" fill="url(#fxBmG)" filter="url(#fxBmCr)"/></g>
+    ${[[112,26],[126,50],[10,112]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.4" fill="#FFD9C9" class="dtwinkle" style="animation-delay:${i*.7}s"/>`).join('')}`,
+  astrolabe:`<defs><linearGradient id="fxAsG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF4D0"/><stop offset=".5" stop-color="#E7B95A"/><stop offset="1" stop-color="#8A6220"/></linearGradient>
+    <filter id="fxAsGl"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g class="dspin"><ellipse cx="70" cy="70" rx="66" ry="52" fill="none" stroke="url(#fxAsG)" stroke-width="2.4" filter="url(#fxAsGl)"/></g>
+    <g class="dspin-rev"><ellipse cx="70" cy="70" rx="66" ry="30" fill="none" stroke="url(#fxAsG)" stroke-width="1.6" transform="rotate(38 70 70)" opacity=".85"/></g>
+    <g class="dspin-slow"><ellipse cx="70" cy="70" rx="64" ry="62" fill="none" stroke="url(#fxAsG)" stroke-width="1.2" opacity=".6" stroke-dasharray="4 8"/><circle cx="134" cy="70" r="2.6" fill="#FFF4D0" filter="url(#fxAsGl)"/></g>
+    ${[[18,28],[122,26],[126,116]].map((p,i)=>`<path d="${DECO_STAR}" transform="translate(${p[0]},${p[1]}) scale(.8)" fill="#FFF4D0" class="dtwinkle" style="animation-delay:${i*.5}s"/>`).join('')}`,
+  astrolabesilver:`<defs><linearGradient id="fxAsS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#C9D2DE"/><stop offset="1" stop-color="#5E6A78"/></linearGradient>
+    <filter id="fxAsSGl"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g class="dspin"><ellipse cx="70" cy="70" rx="66" ry="52" fill="none" stroke="url(#fxAsS)" stroke-width="2.4" filter="url(#fxAsSGl)"/></g>
+    <g class="dspin-rev"><ellipse cx="70" cy="70" rx="66" ry="30" fill="none" stroke="url(#fxAsS)" stroke-width="1.6" transform="rotate(38 70 70)" opacity=".85"/></g>
+    <g class="dspin-slow"><ellipse cx="70" cy="70" rx="64" ry="62" fill="none" stroke="url(#fxAsS)" stroke-width="1.2" opacity=".6" stroke-dasharray="4 8"/><circle cx="134" cy="70" r="2.6" fill="#FFF" filter="url(#fxAsSGl)"/></g>`,
+  styx:`<defs><linearGradient id="fxStG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0E6E6A" stop-opacity="0"/><stop offset=".45" stop-color="#2FE3D6"/><stop offset="1" stop-color="#DFFFFC"/></linearGradient>
+    <filter id="fxStF" x="-40%" y="-40%" width="180%" height="180%"><feTurbulence type="turbulence" baseFrequency=".05 .09" numOctaves="2" seed="4"><animate attributeName="seed" values="1;12;1" dur="6s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="12"/><feGaussianBlur stdDeviation="1"/></filter>
+    <filter id="fxStGl"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="63" fill="none" stroke="#2FE3D6" stroke-width="10" opacity=".22" filter="url(#fxStGl)"/>
+    <g filter="url(#fxStF)">
+      <g class="dspin-slow">${[0,40,80,120,160,200,240,280,320].map((a,i)=>`<path d="M70 -12 C60 2 61 16 70 ${30+(i%2)*6} C79 16 80 2 70 -12 Z" transform="rotate(${a} 70 70)" fill="url(#fxStG)" opacity=".92"/>`).join('')}</g>
+      <g class="dspin-rev">${[20,100,180,260,340].map(a=>`<circle cx="70" cy="2" r="2.2" fill="#DFFFFC" transform="rotate(${a} 70 70)" opacity=".9"/>`).join('')}</g>
+    </g>`,
+  cosmic:`<defs><linearGradient id="fxCoG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7AD9"/><stop offset=".5" stop-color="#8E6BFF"/><stop offset="1" stop-color="#3FD8FF"/></linearGradient>
+    <filter id="fxCoF" x="-40%" y="-40%" width="180%" height="180%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="6"><animate attributeName="seed" values="1;8;1" dur="9s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="12"/><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="fxCoGl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g filter="url(#fxCoF)" class="dspin-slow"><circle cx="70" cy="70" r="63" fill="none" stroke="url(#fxCoG)" stroke-width="16" opacity=".55"/><circle cx="70" cy="70" r="66" fill="none" stroke="#FF7AD9" stroke-width="6" opacity=".35" stroke-dasharray="90 60"/></g>
+    <g class="dspin-rev"><circle cx="70" cy="70" r="64" fill="none" stroke="url(#fxCoG)" stroke-width="1.4" filter="url(#fxCoGl)" opacity=".9"/></g>
+    ${[[24,30],[112,22],[128,80],[36,120],[100,124],[70,4],[8,70]].map((p,i)=>`<path d="${DECO_STAR}" transform="translate(${p[0]},${p[1]}) scale(${.5+(i%3)*.2})" fill="#FFF" class="dtwinkle" style="animation-delay:${i*.45}s"/>`).join('')}`,
+  bubble:`<defs><radialGradient id="fxBuG" cx=".5" cy=".5" r=".5"><stop offset=".82" stop-color="#FFFFFF" stop-opacity="0"/><stop offset=".95" stop-color="#C9B8FF" stop-opacity=".45"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".9"/></radialGradient>
+    <linearGradient id="fxBuI" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7AD7FF" stop-opacity=".55"/><stop offset=".5" stop-color="#FF9BE0" stop-opacity=".25"/><stop offset="1" stop-color="#C6FF9B" stop-opacity=".45"/></linearGradient>
+    <filter id="fxBuGl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="67" fill="url(#fxBuG)"/>
+    <circle cx="70" cy="70" r="67" fill="none" stroke="url(#fxBuI)" stroke-width="3" class="dspin-slow"/>
+    <ellipse cx="46" cy="38" rx="16" ry="8" fill="#FFF" opacity=".55" transform="rotate(-30 46 38)" filter="url(#fxBuGl)"/>
+    <ellipse cx="102" cy="108" rx="7" ry="3.5" fill="#FFF" opacity=".35" transform="rotate(-30 102 108)"/>`,
+  twilight:`<defs><filter id="fxTwF" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="2" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.35" result="d"/><feComposite in="d" in2="SourceGraphic" operator="in"/></filter>
+    <filter id="fxTwGl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="70" cy="70" r="66" fill="none" stroke="#DCE4F2" stroke-width="10" opacity=".22" filter="url(#fxTwGl)"/>
+    <g class="dspin-slow"><circle cx="70" cy="70" r="66" fill="none" stroke="#F4F7FF" stroke-width="12" filter="url(#fxTwF)" opacity=".85"/></g>
+    <g class="dspin-rev"><circle cx="70" cy="70" r="60" fill="none" stroke="#F4F7FF" stroke-width="7" filter="url(#fxTwF)" opacity=".5"/></g>`
+};
+Object.assign(DECO_SVGS,DECO_FX);
 const DECOS=[
   {id:'none',name:'Clean',sub:'No decoration',req:null},
   {id:'orbit',name:'Orbit',sub:'Standard issue',req:{t:'xp',v:0}},
@@ -1668,15 +2317,36 @@ const DECOS=[
   {id:'aura',name:'Golden Aura',sub:'Vanguard · 9,001 PL',req:{t:'xp',v:9001}},
   {id:'crown',name:'The Crown',sub:'Legend · 20,000 PL',req:{t:'xp',v:20000}},
   {id:'ultra',name:'Spirit Flame',sub:'Ascended · 50,000 PL',req:{t:'xp',v:50000}},
-  {id:'grind',name:'Red Shift',sub:'5,000 reps logged',req:{t:'push',v:5000}},
-  {id:'fairway',name:'Fairway Laurel',sub:'10 range sessions',req:{t:'golf',v:10}}
+  {id:'grind',name:'Red Shift',sub:'5,000 logged on your daily metric',req:{t:'push',v:5000}},
+  {id:'fairway',name:'Fairway Laurel',sub:'10 range sessions',req:{t:'golf',v:10}},
+  /* light & energy set */
+  {id:'ripples',name:'Ambient Ripples',sub:'Standard issue',req:{t:'xp',v:0}},
+  {id:'neonruby',name:'Neon Glow — Ruby',sub:'100 PL',req:{t:'xp',v:100}},
+  {id:'neonamethyst',name:'Neon Glow — Amethyst',sub:'100 PL',req:{t:'xp',v:100}},
+  {id:'ripplesarctic',name:'Ambient Ripples — Arctic',sub:'250 PL',req:{t:'xp',v:250}},
+  {id:'moon',name:'Moon — Dusk',sub:'500 PL',req:{t:'xp',v:500}},
+  {id:'astrolabesilver',name:'Astrolabe — Silver',sub:'750 PL',req:{t:'xp',v:750}},
+  {id:'cycling',name:'Cycling Lights — RGB',sub:'1,500 PL',req:{t:'xp',v:1500}},
+  {id:'twilight',name:'Twilight Dust',sub:'2,000 PL',req:{t:'xp',v:2000}},
+  {id:'bubble',name:'Bubble',sub:'2,500 PL',req:{t:'xp',v:2500}},
+  {id:'astrolabe',name:'Astrolabe — Gold',sub:'4,000 PL',req:{t:'xp',v:4000}},
+  {id:'vapor',name:'Cycling Lights — Vaporwave',sub:'5,000 PL',req:{t:'xp',v:5000}},
+  {id:'electric',name:'Electric Aura — Quartz',sub:'6,000 PL',req:{t:'xp',v:6000}},
+  {id:'solar',name:'Solar Pulse',sub:'7,500 PL',req:{t:'xp',v:7500}},
+  {id:'cosmic',name:'Cosmic Rainbow',sub:'12,000 PL',req:{t:'xp',v:12000}},
+  {id:'styx',name:'Styx Spirits',sub:'15,000 PL',req:{t:'xp',v:15000}},
+  {id:'bloodmoon',name:'Moon — Blood',sub:'30-day habit streak',req:{t:'streak',v:30}},
+  {id:'hellflame',name:'Hellflame',sub:'25,000 PL',req:{t:'xp',v:25000}}
 ];
+function bestStreakAll(){return Math.max(0,...S.habits.map(h=>habitStreak(h)));}
+
 function pushTotal(){return Object.values(S.pushups.log).reduce((a,v)=>a+v,0)}
 function decoUnlocked(d){
   if(!d.req)return true;
   if(d.req.t==='xp')return S.xp>=d.req.v;
   if(d.req.t==='push')return pushTotal()>=d.req.v;
   if(d.req.t==='golf')return S.golfSessions.length>=d.req.v;
+  if(d.req.t==='streak')return bestStreakAll()>=d.req.v;
   return false;
 }
 /* raster decorations: {id,name,img(dataURL, transparent square, avatar void in centre),anim} — user-uploaded art (see DECORATION_ART_SPEC) */
@@ -1744,8 +2414,13 @@ function bgfxInit(){
 }
 function bgfxSize(){
   if(!BG.cv)return;
-  const d=Math.min(window.devicePixelRatio||1,2);
-  BG.cv.width=innerWidth*d;BG.cv.height=innerHeight*d;
+  /* render budget: never more than ~1.6MP regardless of monitor/DPR — atmosphere is soft, upscaling is invisible */
+  const d0=Math.min(window.devicePixelRatio||1,2);
+  const px=innerWidth*d0*innerHeight*d0;
+  const scale=Math.min(1,Math.sqrt(1600000/px));
+  const d=d0*scale;
+  BG.cv.width=Math.round(innerWidth*d);BG.cv.height=Math.round(innerHeight*d);
+  BG.cv.style.width=innerWidth+'px';BG.cv.style.height=innerHeight+'px';
   if(BG.ctx)BG.ctx.setTransform(d,0,0,d,0,0);
 }
 function bgfxSet(theme){
@@ -1769,7 +2444,10 @@ function bgfxSeed(){
   BG.grainT=0;
 }
 const GLYPHS='01アイウエオカキク09ΛΞΦΨΣ<>/{}=+*#';
+let BG_LAST=0;
 function bgfxLoop(t){
+  if(window.innerWidth<=760){requestAnimationFrame(bgfxLoop);return;}
+  if(t-BG_LAST<32){requestAnimationFrame(bgfxLoop);return;}BG_LAST=t;
   requestAnimationFrame(bgfxLoop);
   if(!BG.ctx)return;
   const c=BG.ctx,W=innerWidth,H=innerHeight;
@@ -1890,7 +2568,8 @@ const VIEWS=[
   {id:'golf',label:'Golf',icon:'golf'},
   {id:'money',label:'Money',icon:'money'},
   {id:'habits',label:'Habits',icon:'habits'},
-  {id:'notes',label:'Notes',icon:'notes'}
+  {id:'notes',label:'Notes',icon:'notes'},
+  {id:'keys',label:'Keys',icon:'key'}
 ];
 let VIEW='overview';
 function buildNav(){
@@ -1908,6 +2587,7 @@ function buildNav(){
   });
 }
 function go(id){
+  if(VIEW==='keys'&&id!=='keys'&&KEYS_OPEN)keysLock();
   VIEW=id;
   $$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
   $('#rail-avatar').classList.toggle('active',id==='profile');
@@ -2084,8 +2764,9 @@ function addEventModal(date,editId,time){
     <div class="field"><label>Title</label><input id="m-title" value="${ev?esc(ev.title):''}" placeholder="Event title"></div>
     <div class="field-row">
       <div class="field"><label>Date</label><input id="m-date" type="date" value="${ev?ev.date:(date||todayISO())}"></div>
-      <div class="field"><label>Time</label><input id="m-time" type="time" value="${ev?(ev.time||'10:00'):(time||'10:00')}"></div>
+      <div class="field"><label>Time</label><input id="m-time" type="time" value="${ev?(ev.time||'10:00'):(time||'10:00')}" ${ev&&ev.allDay?'disabled':''}></div>
     </div>
+    <label class="chk" style="margin:-4px 0 10px"><input type="checkbox" id="m-allday" ${ev&&ev.allDay?'checked':''}> All-day</label>
     <div class="field-row">
       <div class="field"><label>Duration</label>
         <select id="m-dur">${[30,60,90,120,180,240].map(d=>`<option value="${d}" ${(ev?ev.durMin:60)===d?'selected':''}>${d>=60?(d/60)+'h':d+'m'}</option>`).join('')}</select>
@@ -2098,9 +2779,12 @@ function addEventModal(date,editId,time){
       <button class="btn primary" id="m-save">${ev?'Save':'Add event'}</button>
     </div>`,
     ()=>{
+      $('#m-allday').addEventListener('change',e=>{$('#m-time').disabled=e.target.checked;$('#m-dur').disabled=e.target.checked;});
+      if(ev&&ev.allDay)$('#m-dur').disabled=true;
       $('#m-save').onclick=()=>{
         const title=$('#m-title').value.trim();if(!title)return;
-        const data={title,date:$('#m-date').value,time:$('#m-time').value,durMin:+$('#m-dur').value,cat:$('#m-cat').value};
+        const allDay=$('#m-allday').checked;
+        const data={title,date:$('#m-date').value,time:allDay?'':$('#m-time').value,durMin:allDay?0:+$('#m-dur').value,cat:$('#m-cat').value,allDay};
         if(ev)Object.assign(ev,data);
         else S.events.push({id:uid(),...data});
         save();closeModal();toast(ev?'Event updated':'Event added');
@@ -2188,7 +2872,7 @@ function addWorkoutModal(){
     <h3><span class="tick">#</span> Log workout</h3>
     <div class="field-row">
       <div class="field"><label>Type</label>
-        <select id="m-type"><option>Pushups + core</option><option>Push</option><option>Pull</option><option>Legs</option><option>Full body</option><option>Cardio</option><option>Golf mobility</option></select></div>
+        <select id="m-type">${[...disc().sessions,'Other'].map(t=>`<option>${esc(t)}</option>`).join('')}</select></div>
       <div class="field"><label>Minutes</label><input id="m-mins" type="number" value="40" min="5"></div>
     </div>
     <div class="field"><label>Date</label><input id="m-date" type="date" value="${todayISO()}"></div>
@@ -2315,7 +2999,7 @@ function addHabitModal(){
 /* ============================================================
    VIEW SCAFFOLD
    ============================================================ */
-$('#main').innerHTML=['overview','profile','calendar','work','tasks','fitness','golf','money','habits','notes','settings']
+$('#main').innerHTML=['overview','profile','calendar','work','tasks','fitness','golf','money','habits','notes','keys','settings']
   .map(v=>`<section class="view" id="v-${v}"></section>`).join('');
 /* RENDER registry is wrapped: error boundary + focus/scroll preservation + a11y upgrade of clickable divs */
 const _RENDER_RAW={};
@@ -2381,8 +3065,9 @@ function greetWord(){const h=new Date().getHours();return h<5?'Late shift':h<12?
    ============================================================ */
 /* ---- overview card registry: reorder + hide, persisted ---- */
 let OVEDIT=false;
-const OV_NAME={push:'Daily reps',today:'Today',p1:'P1 fires',eng:'Engagements',habits:'Habits'};
+const OV_NAME={push:'Daily goal',today:'Today',p1:'P1 fires',eng:'Engagements',habits:'Habits'};
 function ovCtl(id){
+  return '';
   if(!OVEDIT)return '';
   return `<div class="ov-ctl">
     <button onclick="ovMove('${id}',-1)" title="Move earlier">${I('left')}</button>
@@ -2393,14 +3078,14 @@ function ovCtl(id){
 const OV_DEF={
   push:{html:c=>`<div class="card span4">${ovCtl('push')}
       <div class="card-head">
-        <div class="eyebrow">${I('fitness')}${esc(S.fit.exercise)} — quick log</div>
+        <div class="eyebrow link" onclick="go('fitness')">${I('fitness')}${esc(S.fit.exercise)} — quick log</div>
         <button class="btn ghost sm" onclick="go('fitness')">${I('right')}Full</button>
       </div>
       <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
         ${ring(c.pt,S.pushups.target,108)}
         <div style="flex:1;min-width:150px">
           <div class="push-btns" style="margin-top:0">
-            ${[10,20,25,50].map(n=>`<button class="push-btn" onclick="pushAdd(${n})">+${n}</button>`).join('')}
+            ${S.sport.metric.quick.map(n=>`<button class="push-btn" onclick="pushAdd(${n})">+${n}</button>`).join('')}
           </div>
           <div class="sub" style="font-size:11px;color:var(--faint);margin-top:10px">${c.pt>=S.pushups.target?'Target closed.':(S.pushups.target-c.pt)+' left — sets between work blocks'}</div>
         </div>
@@ -2408,41 +3093,41 @@ const OV_DEF={
     </div>`},
   today:{html:c=>`<div class="card span4">${ovCtl('today')}
       <div class="card-head">
-        <div class="eyebrow">${I('calendar')}Today</div>
-        <button class="btn ghost sm" onclick="addEventModal()">${I('plus')}Add</button>
+        <div class="eyebrow link" onclick="go('calendar')" title="Open calendar">${I('calendar')}Today</div>
+        <div style="display:flex;gap:6px"><button class="btn ghost sm" onclick="go('calendar')">${I('right')}Open</button><button class="btn ghost sm" onclick="addEventModal()">${I('plus')}Add</button></div>
       </div>
       <div class="rowlist">
         ${c.todayEv.length?c.todayEv.map(e=>`
-          <div class="row">
+          <div class="row link" onclick="editEvent('${e.id}')" title="Edit event">
             <span class="time num">${esc(e.time||'—')}</span>
             <div class="grow"><div class="title">${esc(e.title)}</div></div>
             <span class="tag ${e.cat}" ${AC(e.cat)}><span class="dot"></span>${CATN[e.cat]}</span>
           </div>`).join(''):'<div class="empty">Clear day. Build something.</div>'}
-        ${c.nxt&&c.nxt.date!==c.t?`<div class="row"><span class="time num">${esc(c.nxt.time||'')}</span><div class="grow"><div class="title" style="color:var(--muted)">Next: ${esc(c.nxt.title)}</div><div class="sub">${fmtDateLong(c.nxt.date)}</div></div></div>`:''}
+        ${c.nxt&&c.nxt.date!==c.t?`<div class="row link" onclick="CAL=new Date('${c.nxt.date}T12:00:00');CAL_SEL='${c.nxt.date}';go('calendar')" title="Jump to that day"><span class="time num">${esc(c.nxt.time||'')}</span><div class="grow"><div class="title" style="color:var(--muted)">Next: ${esc(c.nxt.title)}</div><div class="sub">${fmtDateLong(c.nxt.date)}</div></div>${I('right')}</div>`:''}
       </div>
     </div>`},
   p1:{html:c=>`<div class="card span4">${ovCtl('p1')}
       <div class="card-head">
-        <div class="eyebrow">${I('zap')}P1 — fires</div>
+        <div class="eyebrow link" onclick="go('tasks')">${I('zap')}P1 — fires</div>
         <button class="btn ghost sm" onclick="go('tasks')">${I('right')}Board</button>
       </div>
       <div class="rowlist">
         ${c.p1.length?c.p1.slice(0,5).map(x=>`
           <div class="row">
             <button class="check" onclick="taskDone('${x.id}')" aria-label="Complete">${I('check')}</button>
-            <div class="grow"><div class="title">${esc(x.title)}</div>
-            <div class="sub">${CATN[x.biz]||x.biz} · due ${fmtDate(x.due)}</div></div>
+            <div class="grow link" onclick="editTask('${x.id}')"><div class="title">${esc(x.title)}</div>
+            <div class="sub">${areaName(x.biz)} · due ${fmtDate(x.due)}</div></div>
           </div>`).join(''):'<div class="empty">No fires. Rare.</div>'}
       </div>
     </div>`},
   eng:{html:c=>`<div class="card span8">${ovCtl('eng')}
       <div class="card-head">
-        <div class="eyebrow">${I('work')}Active engagements</div>
+        <div class="eyebrow link" onclick="go('work')">${I('work')}Active engagements</div>
         <button class="btn ghost sm" onclick="go('work')">${I('right')}Work</button>
       </div>
       <div class="rowlist">
         ${c.activeProjects.map(p=>`
-          <div class="row">
+          <div class="row link" onclick="editProject('${p.id}')" title="Edit project">
             <span class="tag ${p.biz}" ${AC(p.biz)}><span class="dot"></span>${areaName(p.biz)}</span>
             <div class="grow">
               <div class="title">${esc(p.name)}</div>
@@ -2455,7 +3140,7 @@ const OV_DEF={
     </div>`},
   habits:{html:c=>`<div class="card span4">${ovCtl('habits')}
       <div class="card-head">
-        <div class="eyebrow">${I('habits')}Habits — today</div>
+        <div class="eyebrow link" onclick="go('habits')">${I('habits')}Habits — today</div>
         <button class="btn ghost sm" onclick="go('habits')">${I('right')}All</button>
       </div>
       <div class="rowlist">
@@ -2468,27 +3153,54 @@ const OV_DEF={
       </div>
     </div>`}
 };
+let OV_LASTMOVED=null;
 function ovGrid(c){
-  const order=S.layout.ov.filter(id=>OV_DEF[id]&&!S.layout.hid.includes(id)&&!(id==='push'&&!S.modules.fitness)&&!(id==='eng'&&!S.modules.work)&&!(id==='habits'&&!S.modules.habits)&&!(id==='p1'&&!S.modules.tasks)&&!(id==='today'&&!S.modules.calendar));
-  return `<div class="grid ov-grid ${OVEDIT?'ovedit':''}">${order.map(id=>OV_DEF[id].html(c)).join('')}</div>
-  <div style="display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap">
-    <button class="btn ghost sm" onclick="ovEditToggle()">${I('edit')}${OVEDIT?'Done customizing':'Customize layout'}</button>
-    ${OVEDIT?S.layout.hid.map(id=>`<button class="btn sm" onclick="ovShow('${id}')">${I('plus')}${OV_NAME[id]||id}</button>`).join(''):''}
-    ${OVEDIT?'<span class="sub" style="font-size:11px;color:var(--faint)">Arrows reorder · X hides · hidden blocks come back from here. Saves and syncs like everything else.</span>':''}
+  const order=S.layout.ov.filter(id=>OV_DEF[id]&&!S.layout.hid.includes(id));
+  const grid=`<div class="grid ov-grid ${OVEDIT?'ovedit':''}">${order.map((id,i)=>{
+    let h=OV_DEF[id].html(c);
+    if(OVEDIT)h=h.replace(/^<div class="card ([^"]*)">/,`<div class="card $1 ovblk ${OV_LASTMOVED===id?'moved':''}" data-ov="${id}"><span class="ovnum">${i+1}</span>`);
+    return h;}).join('')}</div>`;
+  if(!OVEDIT)return grid+`<div style="display:flex;gap:8px;align-items:center;margin-top:14px"><button class="btn ghost sm" onclick="ovEditToggle()">${I('edit')}Customize layout</button></div>`;
+  /* edit mode: side panel with the block list = the source of truth; grid mirrors it live */
+  return `<div class="ovedit-wrap">
+    <div class="ovedit-panel card">
+      <div class="card-head"><div class="eyebrow">${I('edit')}Layout — drag order</div><button class="btn primary sm" onclick="ovEditToggle()">${I('check')}Done</button></div>
+      <div class="ovlist">
+        ${order.map((id,i)=>`<div class="ovrow ${OV_LASTMOVED===id?'moved':''}" data-id="${id}">
+          <span class="ovnum">${i+1}</span>
+          <span class="nm">${OV_NAME[id]||id}</span>
+          <div class="grow"></div>
+          <button class="iconbtn" onclick="ovMove('${id}',-1)" ${i===0?'disabled':''} title="Move up">${I('up')}</button>
+          <button class="iconbtn" onclick="ovMove('${id}',1)" ${i===order.length-1?'disabled':''} title="Move down">${I('down')}</button>
+          <button class="iconbtn danger" onclick="ovHide('${id}')" title="Hide">${I('x')}</button>
+        </div>`).join('')}
+        ${S.layout.hid.length?`<div class="ovhid-h">Hidden</div>${S.layout.hid.map(id=>`<div class="ovrow hid" data-id="${id}"><span class="nm">${OV_NAME[id]||id}</span><div class="grow"></div><button class="btn sm" onclick="ovShow('${id}')">${I('plus')}Show</button></div>`).join('')}`:''}
+      </div>
+      <div class="sub" style="font-size:11px;color:var(--faint);margin-top:10px">Numbers match the blocks on the right. Order and visibility sync to every device.</div>
+      <button class="btn ghost sm" style="margin-top:8px" onclick="ovReset()">${I('reset')}Reset to default</button>
+    </div>
+    ${grid}
   </div>`;
+}
+window.ovReset=()=>{S.layout={ov:['push','today','p1','eng','habits'],hid:[]};OV_LASTMOVED=null;save();RENDER.overview();};
+/* FLIP: animate blocks to their new positions after a move */
+function ovFlip(fn){
+  const before={};$$('.ovblk').forEach(el=>{before[el.dataset.ov]=el.getBoundingClientRect();});
+  fn();
+  requestAnimationFrame(()=>{$$('.ovblk').forEach(el=>{const b=before[el.dataset.ov];if(!b)return;const a=el.getBoundingClientRect();const dx=b.left-a.left,dy=b.top-a.top;if(!dx&&!dy)return;
+    el.style.transition='none';el.style.transform=`translate(${dx}px,${dy}px)`;el.getBoundingClientRect();el.style.transition='transform .38s cubic-bezier(.2,.8,.2,1)';el.style.transform='';});});
 }
 window.ovEditToggle=()=>{OVEDIT=!OVEDIT;RENDER.overview();};
 window.ovMove=(id,d)=>{
-  const a=S.layout.ov.filter(x=>!S.layout.hid.includes(x));
   const full=S.layout.ov;
   const i=full.indexOf(id);let j=i+d;
   while(j>=0&&j<full.length&&S.layout.hid.includes(full[j]))j+=d;
   if(j<0||j>=full.length)return;
-  [full[i],full[j]]=[full[j],full[i]];
-  save();RENDER.overview();
+  OV_LASTMOVED=id;
+  ovFlip(()=>{[full[i],full[j]]=[full[j],full[i]];save();RENDER.overview();});
 };
-window.ovHide=id=>{if(!S.layout.hid.includes(id))S.layout.hid.push(id);save();RENDER.overview();};
-window.ovShow=id=>{S.layout.hid=S.layout.hid.filter(x=>x!==id);save();RENDER.overview();};
+window.ovHide=id=>{if(!S.layout.hid.includes(id))S.layout.hid.push(id);OV_LASTMOVED=null;save();RENDER.overview();};
+window.ovShow=id=>{S.layout.hid=S.layout.hid.filter(x=>x!==id);OV_LASTMOVED=id;save();RENDER.overview();};
 
 const CU_LAST={};
 function countUp(el,key){
@@ -2533,7 +3245,7 @@ RENDER.overview=()=>{
         <div class="hstat pl" id="pl-chip"><div class="v num" id="pl-val">${S.xp.toLocaleString()}</div><div class="k" id="pl-rank">Power level · ${rankName()}</div></div>
         ${S.modules.fitness?`<div class="hstat"><div class="v" style="color:${pt>=S.pushups.target?'var(--pos)':'inherit'}">${pt}</div><div class="k">${esc(S.fit.exercise)} today</div></div>`:''}
         <div class="hstat"><div class="v ${monthNet()>=0?'delta-up':'delta-down'}">${fmtMoney(monthNet())}</div><div class="k">Month net</div></div>
-        <div class="hstat"><div class="v">${bestStreak}</div><div class="k">Best streak</div></div>
+        <div class="hstat streak"><div class="v">${bestStreak}</div><div class="k">Best streak</div></div>
         ${S.modules.golf?`<div class="hstat"><div class="v">${S.golf.handicap}</div><div class="k">Handicap</div></div>`:''}
       </div>
     </div>
@@ -2554,6 +3266,7 @@ window.taskDone=id=>{
   });
   RENDER[VIEW]&&RENDER[VIEW]();
 };
+window.pushAddCustom=()=>{const v=prompt('Log how many '+(S.sport.metric.unit||'')+'?');const n=parseFloat(v);if(n>0)pushAdd(n);};
 window.pushAdd=n=>{
   const t=todayISO();
   S.pushups.log[t]=(S.pushups.log[t]||0)+n;
@@ -2617,14 +3330,14 @@ RENDER.profile=()=>{
       </div>
 
       <div class="card">
-        <div class="card-head"><div class="eyebrow">${I('zap')}Avatar decoration — earned, not bought</div></div>
+        <div class="card-head"><div class="eyebrow">${I('zap')}Avatar decoration — earned, not bought</div><span class="sub num" style="font-size:11px;color:var(--faint)">${DECOS.filter(decoUnlocked).length}/${DECOS.length} unlocked</span></div>
         <div class="deco-grid">
           ${DECOS.map(d=>{
             const un=decoUnlocked(d);
             return `<div class="deco-card ${S.profile.deco===d.id?'on':''} ${un?'':'locked'}" onclick="setDeco('${d.id}')" title="${un?d.name:'Locked — '+esc(d.sub)}">
               <div class="deco-prev">
                 <svg class="ph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg>
-                ${d.id!=='none'&&DECO_SVGS[d.id]?`<span class="deco"><svg viewBox="0 0 140 140">${DECO_SVGS[d.id]}</svg></span>`:''}
+                ${d.id!=='none'&&DECO_SVGS[d.id]?`<span class="deco"><svg viewBox="0 0 140 140">${DECO_SVGS[d.id].replace(/<animate[^>]*\/>/g,'')}</svg></span>`:''}
               </div>
               <div class="dn">${d.name}</div>
               <div class="dr">${S.profile.deco===d.id?'Equipped':un?'Unlocked':d.sub}</div>
@@ -2870,7 +3583,8 @@ function calWeek(t){
       ${w.map(iso=>{
         const evs=S.events.filter(e=>e.date===iso);
         return `<div class="wk-col ${iso===t?'today':''}" data-date="${iso}">
-          ${evs.map(e=>{
+          ${evs.filter(e=>e.allDay).map((e,i)=>`<div class="wk-ev allday ${e.cat}" ${AC(e.cat)} style="top:${2+i*20}px;height:17px" onclick="editEvent('${e.id}')">${esc(e.title)}</div>`).join('')}
+          ${evs.filter(e=>!e.allDay).map(e=>{
             const [hh,mm]=(e.time||'09:00').split(':').map(Number);
             const top=Math.max(0,((hh*60+mm)-DAY_START*60)/60*HOUR_H);
             const hgt=Math.max(24,(e.durMin||60)/60*HOUR_H-3);
@@ -2914,11 +3628,11 @@ function bindSwipe(el,cb){
 }
 function dayItems(iso){
   const items=[];
-  S.events.filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||'')).forEach(e=>{
-    items.push({kind:'ev',id:e.id,cat:e.cat,time:e.time||'',title:e.title,sub:CATN[e.cat]+' · '+((e.durMin||60)>=60?((e.durMin||60)/60)+'h':(e.durMin||60)+'m')});
+  S.events.filter(e=>e.date===iso).sort((a,b)=>(b.allDay?1:0)-(a.allDay?1:0)||(a.time||'').localeCompare(b.time||'')).forEach(e=>{
+    items.push({kind:'ev',id:e.id,cat:e.cat,time:e.allDay?'':(e.time||''),title:e.title,sub:CATN[e.cat]+(e.allDay?' · all-day':' · '+((e.durMin||60)>=60?((e.durMin||60)/60)+'h':(e.durMin||60)+'m'))});
   });
   const pu=S.pushups.log[iso];
-  if(pu)items.push({kind:'life',cat:'fitness',time:'',title:S.fit.exercise+' — '+pu,sub:'Daily reps'});
+  if(pu)items.push({kind:'life',cat:'fitness',time:'',title:S.fit.exercise+' — '+pu+' '+(S.sport.metric.unit||''),sub:disc().name});
   S.workouts.filter(x=>x.date===iso).forEach(x=>items.push({kind:'life',cat:'fitness',time:'',title:x.type+' — '+x.mins+'m',sub:'Training'}));
   S.golfSessions.filter(x=>x.date===iso).forEach(x=>items.push({kind:'life',cat:'golf',time:'',title:'Range — '+x.balls+' balls',sub:x.focus||'Practice'}));
   S.golf.rounds.filter(x=>x.date===iso).forEach(x=>items.push({kind:'life',cat:'golf',time:'',title:'Round — '+x.score,sub:x.course}));
@@ -2959,7 +3673,7 @@ function calMonthM(t){
     <div class="mcal-dow">${DOW_NAMES().map(d=>`<span>${d[0]}</span>`).join('')}</div>
     <div class="mcal-days">
       ${cells.map(c=>{
-        const evs=evByDay[c.iso]||[];const mk=lifeMarks(c.iso);
+        const evs=(evByDay[c.iso]||[]).slice().sort((a,b)=>(b.allDay?1:0)-(a.allDay?1:0));const mk=lifeMarks(c.iso);
         const dots=[...evs.slice(0,3).map(e=>e.cat)];
         if(mk.f&&dots.length<4)dots.push('life-f');if(mk.g&&dots.length<4)dots.push('life-g');
         return `<div class="mcal-day ${c.dim?'dim':''} ${c.wknd?'wknd':''} ${c.iso===t?'today':''} ${c.iso===CAL_SEL?'sel':''}" data-date="${c.iso}">
@@ -2987,6 +3701,7 @@ function calDayM(t){
       </div>`;
     }).join('')}
   </div>
+  ${(()=>{const ad=S.events.filter(e=>e.date===CAL_SEL&&e.allDay);return ad.length?`<div class="allday-strip">${ad.map(e=>`<span class="cal-ev ${e.cat}" ${AC(e.cat)} onclick="editEvent('${e.id}')">${esc(e.title)}</span>`).join('')}</div>`:''})()}
   <div class="mday-head slim">
     <div class="dl">${CAL_SEL===t?'Today':d.toLocaleDateString('en-CA',{weekday:'long'})}</div>
     <div class="dr num">${d.toLocaleDateString('en-CA',{month:'long',day:'numeric'})}</div>
@@ -2995,7 +3710,7 @@ function calDayM(t){
     <div id="mday-body">
       <div class="wk-time">${hours.map(h=>`<span style="top:${(h-DAY_START)*HOUR_H}px">${String(h).padStart(2,'0')}:00</span>`).join('')}</div>
       <div id="mday-col" class="wk-col ${CAL_SEL===t?'today':''}">
-        ${evs.map(e=>{
+        ${evs.filter(e=>!e.allDay).map(e=>{
           const [hh,mm]=(e.time||'09:00').split(':').map(Number);
           const top=Math.max(0,((hh*60+mm)-DAY_START*60)/60*HOUR_H);
           const hgt=Math.max(30,(e.durMin||60)/60*HOUR_H-3);
@@ -3023,7 +3738,7 @@ function calAgenda(t){
     const items=[];
     evs.forEach(e=>items.push({cls:e.cat==='fitness'?'f':e.cat==='golf'?'g':'',html:`<div class="t" onclick="editEvent('${e.id}')">${e.time?`<span class="num" style="color:var(--muted)">${esc(e.time)}</span> `:''}${esc(e.title)}</div><div class="s">${CATN[e.cat]} · ${(e.durMin||60)>=60?((e.durMin||60)/60)+'h':(e.durMin||60)+'m'}</div>`}));
     const pu=S.pushups.log[iso];
-    if(pu)items.push({cls:'f',html:`<div class="t">${esc(S.fit.exercise)} — <span class="num">${pu}</span></div><div class="s">Daily reps</div>`});
+    if(pu)items.push({cls:'f',html:`<div class="t">${esc(S.fit.exercise)} — <span class="num">${pu}</span> ${esc(S.sport.metric.unit||'')}</div><div class="s">${esc(disc().name)}</div>`});
     S.workouts.filter(x=>x.date===iso).forEach(x=>items.push({cls:'f',html:`<div class="t">${esc(x.type)} — <span class="num">${x.mins}m</span></div><div class="s">Training</div>`}));
     S.golfSessions.filter(x=>x.date===iso).forEach(x=>items.push({cls:'g',html:`<div class="t">Range — <span class="num">${x.balls}</span> balls</div><div class="s">${esc(x.focus||'Practice')}</div>`}));
     S.golf.rounds.filter(x=>x.date===iso).forEach(x=>items.push({cls:'g',html:`<div class="t">Round — <span class="num">${x.score}</span></div><div class="s">${esc(x.course)}</div>`}));
@@ -3114,17 +3829,22 @@ window.projDel=id=>{S.projects=S.projects.filter(x=>x.id!==id);save();toast('Pro
 /* ============================================================
    TASKS
    ============================================================ */
+let TASKLANE='todo';
+window.taskLaneTab=id=>{TASKLANE=id;RENDER.tasks();};
 RENDER.tasks=()=>{
-  const cols=[{id:'todo',label:'Queue'},{id:'doing',label:'In motion'},{id:'done',label:'Shipped'}];
+  const allCols=[{id:'todo',label:'Queue'},{id:'doing',label:'In motion'},{id:'done',label:'Shipped'}];
+  const mob=MOBILE();
+  const cols=mob?allCols.filter(c=>c.id===TASKLANE):allCols;
   const t=todayISO();
   $('#v-tasks').innerHTML=`
-  <div style="display:flex;align-items:center;margin-bottom:16px">
-    <div class="eyebrow"><span class="tick">#</span> drag between lanes</div>
+  <div style="display:flex;align-items:center;margin-bottom:${mob?10:16}px;gap:8px;flex-wrap:wrap">
+    ${mob?`<div class="seg tiny lane-tabs">${allCols.map(c=>`<button class="${TASKLANE===c.id?'on':''}" onclick="taskLaneTab('${c.id}')">${c.label}<span class="num">${S.tasks.filter(x=>x.status===c.id).length}</span></button>`).join('')}</div>`
+        :`<div class="eyebrow"><span class="tick">#</span> drag between lanes</div>`}
     <div style="flex:1"></div>
-    <button class="btn ghost sm" onclick="clearDone()">${I('trash')}Clear shipped</button>
-    <button class="btn primary sm" onclick="addTaskModal()" style="margin-left:8px">${I('plus')}New task</button>
+    ${mob?'':`<button class="btn ghost sm" onclick="clearDone()">${I('trash')}Clear shipped</button>`}
+    <button class="btn primary sm" onclick="addTaskModal()">${I('plus')}${mob?'':'New task'}</button>
   </div>
-  <div class="grid board">
+  <div class="grid board ${mob?'mob':''}">
     ${cols.map(c=>{
       const list=S.tasks.filter(x=>x.status===c.id).sort((a,b)=>a.prio-b.prio||(a.due||'').localeCompare(b.due||''));
       return `<div class="card">
@@ -3174,16 +3894,18 @@ window.taskDel=id=>{S.tasks=S.tasks.filter(x=>x.id!==id);save();RENDER.tasks();}
 window.clearDone=()=>{S.tasks=S.tasks.filter(x=>x.status!=='done');save();toast('Shipped lane cleared');RENDER.tasks();};
 
 /* ============================================================
-   FITNESS — Operation 200 (the comeback)
+   FITNESS — disciplines
    ============================================================ */
 function rampPlan(){
   /* 8-week ramp from ~60/day back to 200/day */
-  const T=S.pushups.target||100;const steps=[.2,.3,.4,.5,.6,.7,.85,1].map(f=>Math.max(5,Math.round(T*f/5)*5));
+  const T=S.pushups.target||100;
+  const q=T>=200?10:T>=50?5:T>=10?1:0.5;                       /* step granularity scales with the target */
+  const steps=[.2,.3,.4,.5,.6,.7,.85,1].map(f=>Math.max(q,Math.round(T*f/q)*q)).map(v=>+v.toFixed(1));
   const avg3=(()=>{const d=pushDays(3);return Math.round(d.reduce((a,x)=>a+x.v,0)/3)})();
   let cur=steps.findIndex(s=>avg3<s); if(cur<0)cur=steps.length-1;
   return {steps,cur,avg3};
 }
-/* ---- the programmed week — comeback split, keyed to the ramp ---- */
+/* ---- the programmed week — discipline template, keyed to the ramp ---- */
 const PROGRAM=[
   {name:'Recovery',note:'Off day. Recovery is part of the program.',ex:[
     ['Easy walk','20 min, outside'],
@@ -3221,7 +3943,7 @@ const PROGRAM=[
     ['Plank','2×60s']]}
 ];
 function todayProgram(){
-  const P=PROGRAM[new Date().getDay()];
+  const P=(disc().program||PROGRAM)[new Date().getDay()];
   const r=rampPlan();const tgt=r.steps[r.cur];
   const sub=s=>s.replace('TGT',String(tgt)).replace('HALF',String(Math.round(tgt/2))).replace('SET',String(Math.max(10,Math.round(tgt/8))));
   return {name:P.name,note:P.note,ex:P.ex.map(([n,x])=>[n.replace('REPS',S.fit.exercise),sub(x)])};
@@ -3280,7 +4002,8 @@ RENDER.fitness=()=>{
           </div>
         </div>
         <div class="push-btns">
-          ${[10,15,20,25,50].map(n=>`<button class="push-btn" onclick="pushAdd(${n})">+${n}</button>`).join('')}
+          ${S.sport.metric.quick.map(n=>`<button class="push-btn" onclick="pushAdd(${n})">+${n}</button>`).join('')}
+          <button class="push-btn" onclick="pushAddCustom()" title="Enter an amount">…</button>
           <input id="push-custom" type="number" placeholder="Custom" style="width:90px" min="1">
           <button class="btn primary" onclick="pushCustom()">${I('plus')}Add</button>
           ${pt>0?`<button class="btn ghost sm" onclick="pushUndo()" title="Remove today's last-added chunk isn't tracked — this clears today">${I('reset')}Clear today</button>`:''}
@@ -3293,6 +4016,17 @@ RENDER.fitness=()=>{
           <div class="stat"><div class="label">Best day back</div><div class="value">${best}</div></div>
           <div class="stat"><div class="label">3-day avg</div><div class="value">${ramp.avg3}<span class="unit">/day</span></div></div>
         </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="eyebrow">${I('target')}${esc(disc().name)}${S.sport.teamSport?' · '+esc((TEAM_SPORTS.find(x=>x[0]===S.sport.teamSport)||['',''])[1]):''} — skill wheel</div><button class="btn ghost sm" onclick="sportPicker()">${I('edit')}Change</button></div>
+        <div class="split" style="align-items:center">
+          <div class="radar-wrap">${radarChart(S.sport.skills)}</div>
+          <div class="skill-sliders">
+            ${S.sport.skills.map((s,i)=>`<label><span>${esc(s.k)}</span><input type="range" min="1" max="10" value="${s.v}" data-i="${i}" class="sport-skill"><b class="num">${s.v}</b></label>`).join('')}
+          </div>
+        </div>
+        <div class="sub" style="font-size:11px;color:var(--faint);margin-top:8px">Rate yourself honestly. The coach reads this. Revisit monthly.</div>
       </div>
 
       <div class="card">
@@ -3350,10 +4084,10 @@ RENDER.fitness=()=>{
             <button class="check ${S.session.done[i]?'on':''}" onclick="exToggle(${i})">${I('check')}</button>
             <div><div class="nm">${esc(nm)}</div><div class="rx">${esc(rx)}</div></div>
           </div>`).join('')}
-        <div class="sub" style="font-size:11px;color:var(--faint);margin-top:10px">${esc(P.note)} Pushup numbers track your ramp week automatically.</div>
+        <div class="sub" style="font-size:11px;color:var(--faint);margin-top:10px">${esc(P.note)} Targets follow your ramp week automatically.</div>
       </div>`;})()}
       <div class="card">
-        <div class="card-head"><div class="eyebrow">${I('target')}The ramp — 8 weeks to ${S.pushups.target}</div></div>
+        <div class="card-head"><div class="eyebrow">${I('target')}The ramp — 8 weeks to ${S.pushups.target} ${esc(S.sport.metric.unit)}/day</div></div>
         ${ramp.steps.map((s,i)=>`
           <div class="ramp-row ${i<ramp.cur?'past':i===ramp.cur?'now':''}">
             <span class="wk">Wk ${i+1}</span>
@@ -3382,6 +4116,8 @@ RENDER.fitness=()=>{
   </div>`;
 
   $('#w-goal').addEventListener('change',e=>{S.weight.goal=+e.target.value||0;save();RENDER.fitness();});
+  $$('.sport-skill').forEach(inp=>inp.addEventListener('input',e=>{S.sport.skills[+e.target.dataset.i].v=+e.target.value;e.target.nextElementSibling.textContent=e.target.value;}));
+  $$('.sport-skill').forEach(inp=>inp.addEventListener('change',()=>{save();RENDER.fitness();}));
   $('#coach-send').onclick=coachAsk;
   $('#coach-input').addEventListener('keydown',e=>{if(e.key==='Enter')coachAsk()});
   const log=$('#coach-log');log.scrollTop=log.scrollHeight;
@@ -3402,7 +4138,8 @@ function coachContext(){
   const ramp=rampPlan();
   const w7=weekWorkouts().length;
   const cw=curWeight();
-  return `Athlete: ${S.profile.name}. Goal: ${S.fitGoal.focus}. Primary daily movement: ${S.fit.exercise}, target ${S.pushups.target}/day. `+
+  const d=disc();const sk=S.sport.skills.map(s=>s.k+' '+s.v+'/10').join(', ');
+  return `Athlete: ${S.profile.name}. Discipline: ${d.name}${S.sport.teamSport?' ('+S.sport.teamSport+')':''}. Goal: ${S.fitGoal.focus}. Daily metric: ${S.fit.exercise} (${S.sport.metric.unit}), target ${S.pushups.target}/day. Self-rated skills: ${sk}. Session types: ${d.sessions.join(', ')}. `+
   `Training days wanted per week: ${S.fitGoal.days}. Equipment: ${S.fitGoal.equipment}. `+
   `Coaching rules: consistency before load; ramp gradually; never to failure early on; protect joints; program around soreness. `+
   `Live numbers: today ${pushToday()} ${S.fit.exercise}, 7-day total ${push7()}, best day ${bestPushDay()}, 3-day avg ${ramp.avg3}/day (ramp week ${ramp.cur+1}, target ${ramp.steps[ramp.cur]}/day). Workouts logged this week: ${w7}.${cw?` Current weight ${cw}${S.weight.goal?', goal '+S.weight.goal:''}.`:''}`;
@@ -3442,14 +4179,12 @@ function coachLocal(prompt){
   const w7=weekWorkouts().length;
   const EX=S.fit.exercise;
   if(p.includes('plan')||p.includes('week')||p==='__plan'){
-    return `Week ${ramp.cur+1} of the ramp. The job is showing up, not going hard:\n`+
-`D1  ${EX} ${tgt} total — sets of ${setSize}, spread across the day\n`+
-`D2  ${EX} ${tgt} + rows 3×8 easy — balance the pattern\n`+
-`D3  ${EX} ${Math.round(tgt*.5)} easy + 20 min walk\n`+
-`D4  ${EX} ${tgt} + squats 3×12, lunges 2×8/leg\n`+
-`D5  ${EX} ${tgt} + hips/rotation mobility\n`+
-`D6  Benchmark — ONE clean set, stop 2 reps before failure, log the number\n`+
-`D7  Off.\n\nNothing to failure for two weeks. Streak first, numbers second.`;
+    const prog=disc().program;const unit=S.sport.metric.unit;
+    const subst=s=>s.replace('TGT',String(tgt)).replace('HALF',String(Math.round(tgt/2))).replace('SET',String(setSize)).replace(/REPS/g,EX);
+    const weak=[...S.sport.skills].sort((a,b)=>a.v-b.v)[0];
+    return `${disc().name} — week ${ramp.cur+1} of the ramp (${tgt} ${unit}/day). The job is showing up:\n`+
+      prog.map((d,i)=>`D${i+1}  ${d.name} — ${d.ex.map(([n,x])=>subst(n)+(x&&x!=='—'?' '+subst(x):'')).join(' · ')}`).join('\n')+
+      `\n\n${weak?`Weakest on your wheel: ${weak.k} (${weak.v}/10) — steal 10 minutes for it twice this week.`:''} Streak first, numbers second.`;
   }
   if(p.includes('cant')||p.includes("can't")||p.includes('hard')||p.includes('struggl')||p.includes('stuck')){
     return coachPick([
@@ -3882,6 +4617,112 @@ function addHoldingModal(){
    MONEY
    ============================================================ */
 let TXBIZ='all';
+
+/* ============================================================
+   SUBSCRIPTIONS — recurring bills, renewal dates, annual cost, cancellation info, price history
+   ============================================================ */
+const SUB_CYCLES={monthly:{label:'Monthly',months:1},yearly:{label:'Yearly',months:12},weekly:{label:'Weekly',months:0.25},quarterly:{label:'Quarterly',months:3}};
+function subMonthly(s){return s.cycle==='weekly'?s.price*52/12:s.price/SUB_CYCLES[s.cycle].months;}
+function subAnnual(s){return subMonthly(s)*12;}
+function subNext(s){
+  /* next renewal on/after today from anchor date */
+  if(!s.next)return null;
+  let d=new Date(s.next+'T12:00:00');const t=new Date();t.setHours(12,0,0,0);
+  const c=SUB_CYCLES[s.cycle];let guard=0;
+  while(d<t&&guard++<600){if(s.cycle==='weekly')d.setDate(d.getDate()+7);else d.setMonth(d.getMonth()+Math.round(c.months));}
+  return todayISO(d);
+}
+function subDaysTo(s){const n=subNext(s);if(!n)return null;return Math.round((new Date(n+'T12:00:00')-new Date(todayISO()+'T12:00:00'))/86400000);}
+function subsActive(){return S.subs.filter(s=>s.status!=='cancelled');}
+function subsMonthlyTotal(){return subsActive().reduce((a,s)=>a+subMonthly(s),0);}
+window.addSubModal=(editId)=>{
+  const s=editId?S.subs.find(x=>x.id===editId):null;
+  modal(`
+    <h3><span class="tick">#</span> ${s?'Edit subscription':'New subscription'}</h3>
+    <div class="field-row">
+      <div class="field"><label>Name</label><input id="m-sn" value="${s?esc(s.name):''}" placeholder="Netflix / Vercel / Gym"></div>
+      <div class="field"><label>Category</label><select id="m-sc">${['software','media','fitness','utilities','insurance','finance','other'].map(c=>`<option value="${c}" ${(s?s.cat:'software')===c?'selected':''}>${c[0].toUpperCase()+c.slice(1)}</option>`).join('')}</select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Price ($)</label><input id="m-sp" type="number" step="0.01" value="${s?s.price:''}" placeholder="19.99"></div>
+      <div class="field"><label>Billing cycle</label><select id="m-scy">${Object.entries(SUB_CYCLES).map(([k,v])=>`<option value="${k}" ${(s?s.cycle:'monthly')===k?'selected':''}>${v.label}</option>`).join('')}</select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Next renewal</label><input id="m-snx" type="date" value="${s?(s.next||''):todayISO()}"></div>
+      <div class="field"><label>Business</label><select id="m-sb">${S.areas.map(a=>`<option value="${a.id}" ${(s?s.biz:S.areas[S.areas.length-1].id)===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Cancel URL / how</label><input id="m-scu" value="${s?esc(s.cancelUrl||''):''}" placeholder="https://… or 'call 1-800…'"></div>
+      <div class="field"><label>Notice needed</label><select id="m-scn">${[['0','None'],['7','7 days'],['30','30 days'],['60','60 days']].map(([v,l])=>`<option value="${v}" ${String(s?s.notice||0:0)===v?'selected':''}>${l}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Notes</label><input id="m-sno" value="${s?esc(s.note||''):''}" placeholder="Promo ends Nov · card ending 4421"></div>
+    ${S.partner?`<label class="chk"><input type="checkbox" id="m-ssh" ${s&&s.shared?'checked':''}> Split 50/50 with ${esc(S.partner)}</label>`:'<input type="checkbox" id="m-ssh" style="display:none">'}
+    ${s&&s.history&&s.history.length>1?`<div class="sub" style="font-size:11px;color:var(--faint);margin-top:8px">Price history: ${s.history.map(h=>`${fmtMoney(h.price)} <span class="num">(${h.date})</span>`).join(' → ')}</div>`:''}
+    <div class="modal-actions">
+      ${s?`<button class="btn danger" id="m-del">${I('trash')}Delete</button>${s.status!=='cancelled'?`<button class="btn" id="m-cancel">${I('x')}Mark cancelled</button>`:`<button class="btn" id="m-react">${I('reset')}Reactivate</button>`}<div style="flex:1"></div>`:''}
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" id="m-save">${s?'Save':'Add'}</button>
+    </div>`,
+    ()=>{
+      $('#m-save').onclick=()=>{
+        const name=$('#m-sn').value.trim();const price=+$('#m-sp').value;if(!name||!(price>=0))return;
+        const data={name,cat:$('#m-sc').value,price,cycle:$('#m-scy').value,next:$('#m-snx').value,biz:$('#m-sb').value,cancelUrl:$('#m-scu').value.trim(),notice:+$('#m-scn').value,note:$('#m-sno').value.trim(),shared:$('#m-ssh').checked};
+        if(s){
+          if(s.price!==price){s.history=s.history||[{price:s.price,date:s.since||todayISO()}];s.history.push({price,date:todayISO()});}
+          Object.assign(s,data);
+        }else S.subs.push({id:uid(),...data,status:'active',since:todayISO(),history:[{price,date:todayISO()}]});
+        save();closeModal();toast(s?'Subscription updated':'Subscription added');RENDER.money();buildTicker();
+      };
+      if(s){
+        $('#m-del').onclick=()=>{S.subs=S.subs.filter(x=>x.id!==editId);save();closeModal();toast('Removed');RENDER.money();buildTicker();};
+        const c=$('#m-cancel');if(c)c.onclick=()=>{s.status='cancelled';s.cancelledOn=todayISO();save();closeModal();toast('Marked cancelled — '+fmtMoney(subMonthly(s))+'/mo freed');RENDER.money();buildTicker();};
+        const r=$('#m-react');if(r)r.onclick=()=>{s.status='active';delete s.cancelledOn;save();closeModal();RENDER.money();buildTicker();};
+      }
+    });
+};
+window.subLogCharge=id=>{
+  const s=S.subs.find(x=>x.id===id);if(!s)return;
+  S.tx.unshift({id:uid(),label:s.name+' (subscription)',biz:s.biz,date:todayISO(),amt:-s.price,dir:'out',shared:!!s.shared,subId:s.id});
+  save();toast('Charge logged to ledger');RENDER.money();
+};
+function subsCard(){
+  const act=subsActive().slice().sort((a,b)=>(subDaysTo(a)??999)-(subDaysTo(b)??999));
+  const canc=S.subs.filter(s=>s.status==='cancelled');
+  const mo=subsMonthlyTotal();
+  const soon=act.filter(s=>{const d=subDaysTo(s);return d!==null&&d<=7;});
+  const byCat={};act.forEach(s=>{byCat[s.cat]=(byCat[s.cat]||0)+subMonthly(s);});
+  const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  const catColor={software:'var(--accent)',media:'var(--info)',fitness:'var(--neg)',utilities:'#B0C46E',insurance:'#E9B44C',finance:'var(--pos)',other:'var(--muted)'};
+  return `
+  <div class="card" style="margin-bottom:16px" id="subs-card">
+    <div class="card-head" style="flex-wrap:wrap">
+      <div class="eyebrow">${I('reset')}Subscriptions &amp; recurring</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="sub num" style="font-size:11px;color:var(--faint)">${act.length} active${canc.length?` · ${canc.length} cancelled`:''}</span>
+        <button class="btn primary sm" onclick="addSubModal()">${I('plus')}<span class="hide-m">Subscription</span></button>
+      </div>
+    </div>
+    <div class="subs-hero">
+      <div class="stat big"><div class="label">Recurring / month</div><div class="value">${fmtMoney(mo)}</div><div class="sub">${fmtMoney(mo*12)} a year${soon.length?` · <b style="color:var(--neg)">${soon.length} renew${soon.length===1?'s':''} within 7 days</b>`:''}</div></div>
+      <div class="subs-bar">${cats.map(([c,v])=>`<i style="width:${(v/mo*100).toFixed(1)}%;background:${catColor[c]||'var(--muted)'}" title="${c} · ${fmtMoney(v)}/mo"></i>`).join('')}</div>
+      <div class="subs-legend">${cats.map(([c,v])=>`<span><i style="background:${catColor[c]||'var(--muted)'}"></i>${c} <b class="num">${fmtMoney(v)}</b></span>`).join('')}</div>
+    </div>
+    ${act.length?`<div class="subs-list">
+      ${act.map(s=>{const d=subDaysTo(s);const n=subNext(s);const hist=s.history&&s.history.length>1;const up=hist&&s.history[s.history.length-1].price>s.history[0].price;
+        return `<div class="sub-row ${d!==null&&d<=7?'soon':''}" onclick="addSubModal('${s.id}')">
+          <div class="sub-av" style="--kc:${catColor[s.cat]||'var(--muted)'}">${esc(s.name.slice(0,1).toUpperCase())}</div>
+          <div class="sub-main">
+            <div class="sub-t">${esc(s.name)}${s.shared?'<span class="pill">50/50</span>':''}${up?'<span class="pill up" title="Price went up">↑ price</span>':''}</div>
+            <div class="sub-s">${SUB_CYCLES[s.cycle].label} · ${areaName(s.biz)}${s.notice?` · ${s.notice}d notice`:''}${s.cancelUrl?` · <a href="${esc(s.cancelUrl.startsWith('http')?s.cancelUrl:'#')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">cancel</a>`:''}</div>
+          </div>
+          <div class="sub-price"><div class="num">${fmtMoney(s.price)}<span class="cy">/${s.cycle==='monthly'?'mo':s.cycle==='yearly'?'yr':s.cycle==='weekly'?'wk':'qtr'}</span></div><div class="sub-mo num">${fmtMoney(subMonthly(s))}/mo</div></div>
+          <div class="sub-next"><div class="num ${d!==null&&d<=7?'hot':''}">${d===null?'—':d===0?'today':d===1?'tomorrow':d<0?'overdue':'in '+d+'d'}</div><div class="sub-mo num">${n?fmtDate(n):''}</div></div>
+          <button class="iconbtn" onclick="event.stopPropagation();subLogCharge('${s.id}')" title="Log this charge to the ledger">${I('plus')}</button>
+        </div>`;}).join('')}
+    </div>`:`<div class="empty">No subscriptions yet. Add the ones quietly draining you.</div>`}
+    ${canc.length?`<details class="subs-canc"><summary>Cancelled (${canc.length}) — saving ${fmtMoney(canc.reduce((a,s)=>a+subMonthly(s),0))}/mo</summary>${canc.map(s=>`<div class="sub-row canc" onclick="addSubModal('${s.id}')"><div class="sub-av" style="--kc:var(--faint)">${esc(s.name.slice(0,1).toUpperCase())}</div><div class="sub-main"><div class="sub-t">${esc(s.name)}</div><div class="sub-s">cancelled ${s.cancelledOn?fmtDate(s.cancelledOn):''}</div></div><div class="sub-price num">${fmtMoney(s.price)}</div></div>`).join('')}</details>`:''}
+  </div>`;
+}
 RENDER.money=()=>{
   const m=todayISO().slice(0,7);
   const mt=S.tx.filter(t=>t.date.startsWith(m));
@@ -3949,6 +4790,7 @@ RENDER.money=()=>{
       <span class="sub" style="font-size:11.5px;color:var(--muted)">Track stocks + crypto with live P/L. Crypto is keyless (Kraken). Stocks take a free Finnhub key.</span>
     </div>
   </div>`}
+  ${subsCard()}
   <div class="grid money-stats" style="margin-bottom:16px">
     <div class="card stat"><div class="label">Month income</div><div class="value delta-up">${fmtMoney(income)}</div></div>
     <div class="card stat"><div class="label">Month expenses</div><div class="value delta-down">${fmtMoney(expenses)}</div></div>
@@ -4320,7 +5162,7 @@ RENDER.settings=()=>{
     </div>
     <div class="field-row" style="margin-top:12px">
       <div class="field"><label>Shared-expense partner (optional)</label><input id="set-partner" value="${esc(S.partner)}" placeholder="Name — enables 50/50 splits"></div>
-      <div class="field"><label>Daily movement</label><input id="set-ex" value="${esc(S.fit.exercise)}" placeholder="Pushups / Squats / Steps"></div>
+      <div class="field"><label>Training discipline</label><button class="btn" onclick="sportPicker()" style="width:100%;justify-content:space-between">${I('fitness')}${esc(disc().name)} · ${esc(S.sport.metric.label)} ${S.sport.metric.target}/day ${I('right')}</button></div>
     </div>
   </div>
 
@@ -4353,7 +5195,7 @@ RENDER.settings=()=>{
   $('#set-push').addEventListener('change',e=>{S.pushups.target=Math.max(10,+e.target.value||200);save();});
   $('#set-ws').addEventListener('change',e=>{S.weekStart=e.target.value;save();});
   $('#set-partner').addEventListener('change',e=>{S.partner=e.target.value.trim();save();});
-  $('#set-ex').addEventListener('change',e=>{S.fit.exercise=e.target.value.trim()||'Reps';save();buildTicker();});
+
   $('#set-fx').addEventListener('change',e=>{S.fx=e.target.checked;save();if(S.fx)bgfxSeed();});
   $('#set-export').onclick=()=>{
     const blob=new Blob([JSON.stringify(JSON.parse(SJSON()),null,2)],{type:'application/json'});
@@ -4394,6 +5236,7 @@ window.areaRename=(id,v)=>{const a=S.areas.find(x=>x.id===id);if(a){a.name=v.tri
 window.areaColorSet=(id,v)=>{const a=S.areas.find(x=>x.id===id);if(a){a.color=v;save();}};
 window.areaKind=(id,v)=>{const a=S.areas.find(x=>x.id===id);if(a){a.kind=v;save();}};
 window.areaDel=id=>{if(S.areas.length<=1)return;if(!confirm('Remove this area? Items keep their label but lose colour.'))return;S.areas=S.areas.filter(a=>a.id!==id);save();RENDER.settings();};
+window.demoReset=()=>{if(!confirm('Reset the demo? Clears everything in this browser and restarts onboarding.'))return;try{localStorage.removeItem(KEY);}catch(e){}location.reload();};
 window.hqLogout=async()=>{
   if(!confirm('Log out on this device? Data stays in the cloud; you will need the passphrase again here.'))return;
   try{await fetch('/api/logout');}catch(e){}
@@ -4436,7 +5279,7 @@ window.snapRestore=async d=>{
 /* ============================================================
    ONBOARDING WIZARD
    ============================================================ */
-const OB={step:0,name:'',handle:'',areas:[{name:'Work',color:'#C2A264',kind:'work'},{name:'Personal',color:'#4E9E77',kind:'life'}],modules:{calendar:true,work:true,tasks:true,fitness:true,golf:false,money:true,habits:true,notes:true},exercise:'Pushups',target:100,goal:'Build a daily habit',partner:'',theme:'broadcast'};
+const OB={step:0,name:'',handle:'',sport:'general',team:'soccer',unit:'min',areas:[{name:'Work',color:'#C2A264',kind:'work'},{name:'Personal',color:'#4E9E77',kind:'life'}],modules:{calendar:true,work:true,tasks:true,fitness:true,golf:false,money:true,habits:true,notes:true,keys:true},exercise:'Active minutes',target:30,goal:'Build a daily habit',partner:'',theme:'broadcast'};
 const OB_STEPS=5;
 function obPaint(){
   const el=$('#onboard');if(!el)return;
@@ -4462,14 +5305,18 @@ function obPaint(){
     <h2>Pick your modules</h2>
     <div class="lead">Turn on what you'll actually use. You can change this anytime in Settings.</div>
     <div class="opts">
-      ${VIEWS.filter(v=>v.id!=='overview').map(v=>`<div class="opt ${OB.modules[v.id]?'on':''}" onclick="obMod('${v.id}')">${I(v.icon)}<div><div class="t">${v.label}</div><div class="s">${({calendar:'Month · week · agenda',work:'Projects by area',tasks:'Kanban + priorities',fitness:'Daily reps + coach',golf:'Practice lab + bag',money:'Ledger + encrypted portfolio',habits:'Streak grid',notes:'Encrypted notes'})[v.id]}</div></div></div>`).join('')}
+      ${VIEWS.filter(v=>v.id!=='overview').map(v=>`<div class="opt ${OB.modules[v.id]?'on':''}" onclick="obMod('${v.id}')">${I(v.icon)}<div><div class="t">${v.label}</div><div class="s">${({calendar:'Month · week · agenda',work:'Projects by area',tasks:'Kanban + priorities',fitness:'Daily reps + coach',golf:'Practice lab + bag',money:'Ledger + encrypted portfolio',habits:'Streak grid',notes:'Encrypted notes',keys:'Encrypted password vault'})[v.id]}</div></div></div>`).join('')}
     </div>`;
   if(OB.step===3)body=`
-    <h2>Your daily goal</h2>
-    <div class="lead">HQ tracks one movement every day and coaches you around it. Anything countable works.</div>
+    <h2>What do you train?</h2>
+    <div class="lead">Fitness reshapes around your sport — daily metric, session types, skill wheel, weekly program, coach. Change it anytime.</div>
+    <div class="opts" style="margin-bottom:12px">
+      ${Object.entries(DISCIPLINES).map(([id,x])=>`<div class="opt ${OB.sport===id?'on':''}" onclick="obSport('${id}')">${I('fitness')}<div><div class="t">${x.name}</div><div class="s">${x.sub}</div></div></div>`).join('')}
+    </div>
+    ${OB.sport==='team'?`<div class="field"><label>Which sport?</label><select id="ob-team">${TEAM_SPORTS.map(([v,l])=>`<option value="${v}" ${OB.team===v?'selected':''}>${l}</option>`).join('')}</select></div>`:''}
     <div class="field-row">
-      <div class="field"><label>Movement</label><input id="ob-ex" value="${esc(OB.exercise)}" placeholder="Pushups / Squats / Steps / Pages read"></div>
-      <div class="field"><label>Daily target</label><input id="ob-target" type="number" min="5" value="${OB.target}"></div>
+      <div class="field"><label>Daily metric</label><input id="ob-ex" value="${esc(OB.exercise)}"></div>
+      <div class="field"><label>Daily target (${esc(OB.unit)})</label><input id="ob-target" type="number" min="1" value="${OB.target}"></div>
     </div>
     <div class="field"><label>What are you working toward?</label><input id="ob-goal" value="${esc(OB.goal)}" placeholder="Build a daily habit / Get stronger / Lose 10 lbs"></div>
     <div class="field"><label>Shared-expense partner (optional)</label><input id="ob-partner" value="${esc(OB.partner)}" placeholder="Name — enables 50/50 splits in Money"></div>`;
@@ -4493,11 +5340,12 @@ function obCollect(){
   const g=id=>{const e=$('#'+id);return e?e.value:null};
   if(OB.step===0){OB.name=(g('ob-name')||'').trim();OB.handle=(g('ob-handle')||'').trim();}
   if(OB.step===1){$$('.ob-an').forEach(i=>OB.areas[+i.dataset.i].name=i.value.trim()||'Area');$$('.ob-ac').forEach(i=>OB.areas[+i.dataset.i].color=i.value);$$('.ob-ak').forEach(i=>OB.areas[+i.dataset.i].kind=i.value);}
-  if(OB.step===3){OB.exercise=(g('ob-ex')||'').trim()||'Reps';OB.target=Math.max(5,+g('ob-target')||100);OB.goal=(g('ob-goal')||'').trim()||'Build a daily habit';OB.partner=(g('ob-partner')||'').trim();}
+  if(OB.step===3){OB.exercise=(g('ob-ex')||'').trim()||DISCIPLINES[OB.sport].metric.label;OB.target=Math.max(1,+g('ob-target')||DISCIPLINES[OB.sport].metric.target);OB.goal=(g('ob-goal')||'').trim()||'Build a daily habit';OB.partner=(g('ob-partner')||'').trim();const t=g('ob-team');if(t)OB.team=t;}
 }
 window.obAreaAdd=()=>{obCollect();OB.areas.push({name:'',color:'#5E8FB0',kind:'life'});obPaint();};
 window.obAreaDel=i=>{obCollect();OB.areas.splice(i,1);obPaint();};
 window.obMod=id=>{OB.modules[id]=!OB.modules[id];obPaint();};
+window.obSport=id=>{const d=DISCIPLINES[id];OB.sport=id;OB.exercise=d.metric.label;OB.unit=d.metric.unit;OB.target=d.metric.target;obPaint();};
 window.obTheme=id=>{OB.theme=id;setTheme(id);obPaint();};
 window.obNext=d=>{
   obCollect();
@@ -4511,7 +5359,9 @@ function obFinish(){
   S.areas=OB.areas.map(a=>({id:a.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||('a_'+uid()),name:a.name,color:a.color,kind:a.kind}));
   /* dedupe ids */
   const seen={};S.areas.forEach(a=>{let id=a.id,n=2;while(seen[id])id=a.id+'-'+(n++);seen[id]=1;a.id=id;});
-  S.modules=OB.modules;S.fit.exercise=OB.exercise;S.pushups.target=OB.target;S.fitGoal.focus=OB.goal;S.partner=OB.partner;S.theme=OB.theme;
+  S.modules=OB.modules;S.fitGoal.focus=OB.goal;S.partner=OB.partner;S.theme=OB.theme;
+  sportApply(OB.sport,OB.sport==='team'?OB.team:'',{label:OB.exercise,unit:OB.unit,target:OB.target,quick:DISCIPLINES[OB.sport].metric.quick});
+  S.sport.skills=discSkillsDefaultFor(OB.sport,OB.sport==='team'?OB.team:'').map(k=>({k,v:5}));
   /* retarget starter task/habit to the first area / movement */
   S.tasks.forEach(t=>{if(!S.areas.some(a=>a.id===t.biz))t.biz=S.areas[0].id;});
   const h=S.habits[0];if(h&&h.name==='Show up')h.name=OB.exercise+' — every day';
@@ -4520,6 +5370,187 @@ function obFinish(){
   buildNav();paintAvatar();applyAccent();setTheme(S.theme);go('overview');buildTicker();
   toast('Welcome aboard, '+S.profile.name);
 }
+
+/* ============================================================
+   KEYS — encrypted password vault (PBKDF2 → AES-256-GCM), own key, in-memory when open, auto-locks
+   ============================================================ */
+let KEYS_OPEN=false, KEYS_KEY=null, KEYS_TIMER=null, KEYS_Q='', KEYS_REVEAL={};
+const KV=[];  /* decrypted items: {id,title,user,pass,url,note,ts} */
+async function keysDerive(pass,salt){
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function keysPersist(){
+  if(!KEYS_OPEN||!KEYS_KEY)return;
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},KEYS_KEY,new TextEncoder().encode(JSON.stringify(KV)));
+  S.keys.enc={iv:b64e(iv),ct:b64e(ct)};S.keys.updated=Date.now();save();
+}
+function keysTouch(){clearTimeout(KEYS_TIMER);if(KEYS_OPEN)KEYS_TIMER=setTimeout(()=>{keysLock();toast('Keys auto-locked');},5*60*1000);}
+window.keysLock=()=>{KEYS_OPEN=false;KEYS_KEY=null;KV.length=0;KEYS_REVEAL={};clearTimeout(KEYS_TIMER);if(VIEW==='keys')RENDER.keys();};
+window.keysUnlock=async()=>{
+  const inp=$('#keys-pass');if(!inp)return;const pass=inp.value;
+  try{
+    if(S.keys.hash){
+      const h=await sha256hex(pass+':'+S.keys.salt);
+      if(h!==S.keys.hash){inp.value='';toast('Denied');return;}
+      KEYS_KEY=await keysDerive(pass,b64d(S.keys.salt));
+      if(S.keys.enc){const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(S.keys.enc.iv)},KEYS_KEY,b64d(S.keys.enc.ct));KV.length=0;KV.push(...JSON.parse(new TextDecoder().decode(pt)));}
+    }else{
+      if(pass.length<8){toast('Keys master key: 8+ characters');return;}
+      const c=$('#keys-pass2');if(!c||c.value!==pass){toast("Keys don't match");return;}
+      const saltB=crypto.getRandomValues(new Uint8Array(16));const salt=b64e(saltB);
+      S.keys.salt=salt;S.keys.hash=await sha256hex(pass+':'+salt);
+      KEYS_KEY=await keysDerive(pass,saltB);KV.length=0;
+      KEYS_OPEN=true;await keysPersist();
+      toast('Keys vault created');RENDER.keys();return;
+    }
+    KEYS_OPEN=true;keysTouch();toast('Keys open — auto-locks in 5 min');RENDER.keys();
+  }catch(e){toast('Could not open vault');}
+};
+window.keysAdd=(editId)=>{
+  const it=editId?KV.find(x=>x.id===editId):null;
+  modal(`
+    <h3><span class="tick">#</span> ${it?'Edit key':'New key'}</h3>
+    <div class="field"><label>Title</label><input id="m-kt" value="${it?esc(it.title):''}" placeholder="Cloudflare / Kraken / Router"></div>
+    <div class="field-row">
+      <div class="field"><label>Username / email</label><input id="m-ku" value="${it?esc(it.user):''}" autocomplete="off"></div>
+      <div class="field"><label>URL</label><input id="m-kl" value="${it?esc(it.url||''):''}" placeholder="https://"></div>
+    </div>
+    <div class="field"><label>Password</label>
+      <div style="display:flex;gap:6px"><input id="m-kp" value="${it?esc(it.pass):''}" autocomplete="off" style="font-family:var(--font-mono)"><button class="btn sm" type="button" onclick="keysGen()" title="Generate">${I('dice')}</button></div>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="m-kn" placeholder="Recovery codes, hints…">${it?esc(it.note||''):''}</textarea></div>
+    <div class="modal-actions">
+      ${it?`<button class="btn danger" id="m-del">${I('trash')}Delete</button><div style="flex:1"></div>`:''}
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" id="m-save">${it?'Save':'Add key'}</button>
+    </div>`,
+    ()=>{
+      $('#m-save').onclick=async()=>{
+        const title=$('#m-kt').value.trim();if(!title)return;
+        const data={title,user:$('#m-ku').value.trim(),url:$('#m-kl').value.trim(),pass:$('#m-kp').value,note:$('#m-kn').value.trim(),ts:Date.now()};
+        if(it)Object.assign(it,data);else KV.unshift({id:uid(),...data});
+        await keysPersist();closeModal();toast(it?'Key updated':'Key added');RENDER.keys();
+      };
+      if(it)$('#m-del').onclick=async()=>{const i=KV.findIndex(x=>x.id===editId);if(i>-1)KV.splice(i,1);await keysPersist();closeModal();toast('Key deleted');RENDER.keys();};
+    });
+};
+window.keysGen=()=>{
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*?-_';
+  const a=crypto.getRandomValues(new Uint32Array(20));
+  const p=[...a].map(n=>chars[n%chars.length]).join('');
+  const el=$('#m-kp');if(el){el.value=p;el.focus();}
+};
+window.keysCopy=async(id,field)=>{
+  const it=KV.find(x=>x.id===id);if(!it)return;
+  try{await navigator.clipboard.writeText(it[field]||'');toast((field==='pass'?'Password':'Username')+' copied — clears in 30s');
+    setTimeout(async()=>{try{const cur=await navigator.clipboard.readText();if(cur===it[field])await navigator.clipboard.writeText('');}catch(e){}},30000);}
+  catch(e){toast('Clipboard blocked');}
+  keysTouch();
+};
+window.keysReveal=id=>{KEYS_REVEAL[id]=!KEYS_REVEAL[id];keysTouch();RENDER.keys();};
+window.keysChangeMaster=async()=>{
+  if(!KEYS_OPEN)return;
+  const p=await keyPrompt('New master key','Re-encrypts every key with a new master key.',true);
+  if(!p||p.length<8){if(p)toast('8+ characters');return;}
+  const saltB=crypto.getRandomValues(new Uint8Array(16));const salt=b64e(saltB);
+  S.keys.salt=salt;S.keys.hash=await sha256hex(p+':'+salt);KEYS_KEY=await keysDerive(p,saltB);
+  await keysPersist();toast('Master key changed');
+};
+function keysStrength(p){
+  if(!p)return 0;let s=0;if(p.length>=8)s++;if(p.length>=14)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^A-Za-z0-9]/.test(p))s++;return Math.min(4,Math.round(s*0.8));
+}
+RENDER.keys=()=>{
+  const q=KEYS_Q.toLowerCase();
+  const list=KV.filter(k=>!q||(k.title+' '+k.user+' '+(k.url||'')).toLowerCase().includes(q)).sort((a,b)=>a.title.localeCompare(b.title));
+  $('#v-keys').innerHTML=`
+  ${!KEYS_OPEN?`
+  <div class="card keys-gate">
+    <div class="keys-gate-in">
+      <div class="keys-badge">${I('key')}</div>
+      <h3>${S.keys.hash?'Keys — sealed':'Keys — set your master key'}</h3>
+      <p>${S.keys.hash?'Everything here is AES-256 encrypted at rest. Enter your master key to open. Auto-locks after 5 minutes idle, on reload, and on lock.'
+        :'A private password vault. Pick a master key that is not your door passphrase or vault key. It never leaves this device unhashed — lose it, lose the vault.'}</p>
+      <input id="keys-pass" type="password" placeholder="${S.keys.hash?'master key':'create master key (8+)'}" autocomplete="off" onkeydown="if(event.key==='Enter')keysUnlock()">
+      ${S.keys.hash?'':`<input id="keys-pass2" type="password" placeholder="confirm" autocomplete="off" onkeydown="if(event.key==='Enter')keysUnlock()">`}
+      <button class="btn primary" onclick="keysUnlock()">${I('lock')}${S.keys.hash?'Unlock':'Create vault'}</button>
+    </div>
+  </div>`:`
+  <div class="keys-top">
+    <div class="note-search" style="flex:1;max-width:360px"><input id="keys-q" placeholder="Search keys" value="${esc(KEYS_Q)}" autocomplete="off"></div>
+    <div style="flex:1"></div>
+    <span class="sub num" style="font-size:11px;color:var(--faint)">${KV.length} keys · auto-lock 5m</span>
+    <button class="btn ghost sm" onclick="keysChangeMaster()" title="Change master key">${I('edit')}Master</button>
+    <button class="btn ghost sm" onclick="keysLock()">${I('lock')}Lock</button>
+    <button class="btn primary sm" onclick="keysAdd()">${I('plus')}<span class="hide-m">New key</span></button>
+  </div>
+  <div class="keys-list">
+    ${list.length?list.map(k=>{
+      const dom=(k.url||'').replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+      const st=keysStrength(k.pass);
+      return `<div class="key-row">
+        <div class="key-av" style="--kc:hsl(${[...k.title].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 45% 45%)">${esc(k.title.slice(0,1).toUpperCase())}</div>
+        <div class="key-main" onclick="keysAdd('${k.id}')">
+          <div class="key-t">${esc(k.title)}${dom?`<span class="key-dom">${esc(dom)}</span>`:''}</div>
+          <div class="key-u">${esc(k.user||'—')}</div>
+          <div class="key-p ${KEYS_REVEAL[k.id]?'show':''}">${KEYS_REVEAL[k.id]?esc(k.pass):'••••••••••••'}<i class="st s${st}" title="strength"></i></div>
+        </div>
+        <div class="key-act">
+          <button class="iconbtn" onclick="keysCopy('${k.id}','user')" title="Copy username">${I('user')}</button>
+          <button class="iconbtn" onclick="keysCopy('${k.id}','pass')" title="Copy password">${I('copy')}</button>
+          <button class="iconbtn" onclick="keysReveal('${k.id}')" title="${KEYS_REVEAL[k.id]?'Hide':'Reveal'}">${I(KEYS_REVEAL[k.id]?'eyeoff':'eye')}</button>
+          ${k.url?`<a class="iconbtn" href="${esc(k.url.startsWith('http')?k.url:'https://'+k.url)}" target="_blank" rel="noopener" title="Open site">${I('right')}</a>`:''}
+        </div>
+      </div>`;}).join(''):`<div class="empty" style="padding:50px 20px">${KEYS_Q?'No matches.':'Empty vault. Add your first key.'}</div>`}
+  </div>`}`;
+  const kq=$('#keys-q');if(kq)kq.addEventListener('input',e=>{KEYS_Q=e.target.value;const p=e.target.selectionStart;RENDER.keys();const n=$('#keys-q');if(n){n.focus();n.setSelectionRange(p,p);}});
+  if(KEYS_OPEN){['click','keydown','touchstart'].forEach(ev=>$('#v-keys').addEventListener(ev,keysTouch,{passive:true,once:true}));}
+  const kp=$('#keys-pass');if(kp)setTimeout(()=>kp.focus(),50);
+};
+/* relock keys when leaving the view or hiding the tab */
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&KEYS_OPEN)keysLock();});
+
+
+window.sportPicker=()=>{
+  let pick=S.sport.id,team=S.sport.teamSport||'soccer';
+  const paint=()=>{
+    const d=DISCIPLINES[pick];
+    $('#sp-grid').innerHTML=Object.entries(DISCIPLINES).map(([id,x])=>`<div class="opt ${pick===id?'on':''}" data-id="${id}">${I('fitness')}<div><div class="t">${x.name}</div><div class="s">${x.sub}</div></div></div>`).join('');
+    $$('#sp-grid .opt').forEach(o=>o.onclick=()=>{pick=o.dataset.id;paint();});
+    $('#sp-team').style.display=pick==='team'?'block':'none';
+    $('#sp-ml').value=d.metric.label;$('#sp-mu').value=d.metric.unit;$('#sp-mt').value=d.metric.target;
+    $('#sp-mq').value=d.metric.quick.join(', ');
+    $('#sp-team-sel').value=team;
+  };
+  modal(`
+    <h3><span class="tick">#</span> Training discipline</h3>
+    <div class="sub" style="font-size:12px;color:var(--muted);margin-bottom:12px">Pick what you train. Fitness reshapes around it — daily metric, session types, skill wheel, weekly program, coach.</div>
+    <div id="sp-grid" class="opts" style="margin-bottom:12px"></div>
+    <div id="sp-team" class="field" style="display:none"><label>Which sport?</label><select id="sp-team-sel">${TEAM_SPORTS.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></div>
+    <div class="field-row">
+      <div class="field"><label>Daily metric</label><input id="sp-ml" placeholder="Pushups / Kilometres"></div>
+      <div class="field"><label>Unit</label><input id="sp-mu" placeholder="reps / km / min"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Daily target</label><input id="sp-mt" type="number" min="1"></div>
+      <div class="field"><label>Quick-add buttons</label><input id="sp-mq" placeholder="10, 20, 25, 50"></div>
+    </div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="sp-save">Apply</button></div>`,
+    ()=>{
+      paint();
+      $('#sp-team-sel').addEventListener('change',e=>{team=e.target.value;});
+      $('#sp-save').onclick=()=>{
+        const quick=$('#sp-mq').value.split(/[,\s]+/).map(Number).filter(n=>n>0).slice(0,5);
+        const metric={label:$('#sp-ml').value.trim()||DISCIPLINES[pick].metric.label,unit:$('#sp-mu').value.trim()||DISCIPLINES[pick].metric.unit,target:Math.max(1,+$('#sp-mt').value||DISCIPLINES[pick].metric.target),quick:quick.length?quick:DISCIPLINES[pick].metric.quick};
+        const changed=pick!==S.sport.id||team!==S.sport.teamSport;
+        sportApply(pick,pick==='team'?team:'',metric);
+        if(changed)S.sport.skills=discSkillsDefaultFor(pick,pick==='team'?team:'').map(k=>({k,v:5}));
+        save();closeModal();toast(DISCIPLINES[pick].name+' — locked in');
+        RENDER[VIEW]&&RENDER[VIEW]();buildTicker();
+      };
+    });
+};
 
 /* ============================================================
    COMMAND PALETTE
@@ -4538,6 +5569,8 @@ const PAL_CMDS=[
   {label:'Log range session',icon:'golf',hint:'log',run:addGolfModal},
   {label:'Log round',icon:'golf',hint:'log',run:addRoundModal},
   {label:'Add transaction',icon:'money',hint:'log',run:addTxModal},
+  {label:'Open Keys vault',icon:'key',hint:'go',run:()=>go('keys')},
+  {label:'Add subscription',icon:'reset',hint:'new',run:()=>{go('money');addSubModal();}},
   {label:'Add portfolio holding',icon:'money',hint:'new',run:()=>{PORT_OPEN?addHoldingModal():(go('money'),toast('Vault sealed — second key first'))}},
   {label:'Refresh portfolio quotes',icon:'reset',hint:'live',run:()=>{PORT_OPEN?refreshQuotes(true):(go('money'),toast('Vault sealed — second key first'))}},
   {label:'Add habit',icon:'habits',hint:'new',run:addHabitModal},
@@ -4583,6 +5616,7 @@ focusPaint();
 tickClock();
 go('overview');
 buildTicker();
+if(DEMO){const db=document.getElementById('demo-bar');if(db){db.style.display='flex';document.documentElement.classList.add('demo');const rp=document.getElementById('db-repo');if(rp&&window.HQ_REPO_URL)rp.href=window.HQ_REPO_URL;}}
 pullState().finally(()=>{BOOTED=true;if(!S.setup)obPaint();});
 setInterval(()=>{if(SYNC.on&&!document.hidden)pullState();},120000);
 setInterval(buildTicker,60000);

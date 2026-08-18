@@ -4,6 +4,12 @@
 
 ---
 
+## Try it live (no install)
+Two zero-cost ways to publish a public demo — no passphrase, no cloud, saves only in the visitor's browser, with a **Reset demo** button so anyone can start from onboarding:
+
+1. **GitHub Pages** — repo → Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)` → Save. Your demo is live at `https://<you>.github.io/<repo>/` (root redirects to `app/?demo=1`). Nothing else to configure; the app detects `github.io` and enters demo mode.
+2. **Your Worker** — every deployed HQ also serves `/demo` publicly (no login) as a browser-only preview. Set a `REPO_URL` variable on the Worker to point the "Deploy your own" button at your repo.
+
 ## Deploy your own (browser only, ~5 minutes, free)
 
 1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Storage & Databases → Workers KV → Create** → name it `HQ_KV`
@@ -23,16 +29,17 @@ Install it: iPhone → Safari → Share → *Add to Home Screen*. Desktop → in
 | `ALERT_FROM` | text | Sender for Resend (verified domain) |
 
 ## Features
-- **Overview** — customizable blocks (reorder / hide), power level, live ticker
+- **Overview** — every block links into its module; layout editor with numbered side panel + animated reordering; power level; live ticker
 - **Profile** — avatar, banner, accent, **ten themes with living animated atmospheres** (Broadcast, Oracle, Phosphor, Violet, Daylight, Neon, Ember, Arctic, Monolith, Sakura), decorations earned by using the app, custom painted art
-- **Calendar** — month · week · agenda; Sun/Mon start; iOS-style on mobile with swipe + day list
+- **Calendar** — month · week · agenda; all-day events; Sun/Mon start; iOS-style on mobile with swipe + day list
 - **Work** — projects grouped by your own areas
 - **Tasks** — kanban, priorities, edit, undo
-- **Fitness** — any daily movement, 8-week ramp, programmed sessions, coach
+- **Fitness** — pick your **discipline** (calisthenics, strength, running, cycling, swimming, team sport with per-sport skill sets, combat sports, general fitness, yoga, custom): daily metric + quick-adds, session types, 7-day program, skill wheel, 8-week ramp, coach — all reshaped around your sport
 - **Golf** (optional) — skill radar, practice lab, bag gapping, rounds
-- **Money** — ledger, partner 50/50 splits, **AES-encrypted** portfolio vault with live quotes
+- **Money** — ledger, partner 50/50 splits, **subscriptions & recurring** (renewals, annual cost, price history, cancel info), **AES-encrypted** portfolio vault with live quotes
 - **Habits** — streak grid
 - **Notes** — search, pin, folders, **AES-locked** notes, iOS-style on mobile
+- **Keys** — encrypted password vault (own master key, PBKDF2 → AES-256-GCM), copy/reveal/generator, auto-locks
 - **Settings** — modules on/off, areas editor, cloud snapshots (7 days), security, door log, export/import
 
 ## Themes
